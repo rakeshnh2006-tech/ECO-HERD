@@ -7,9 +7,12 @@ All thresholds and keys are accessed through this module; no hardcoded values el
 """
 
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Always load .env relative to this file — works regardless of CWD (Streamlit, CLI, tests)
+_ENV_PATH = Path(__file__).parent / ".env"
+load_dotenv(dotenv_path=_ENV_PATH, override=False)
 
 # ---------------------------------------------------------------------------
 # Helper
