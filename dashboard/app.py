@@ -425,49 +425,85 @@ map_col, trace_col = st.columns([3, 2], gap="medium")
 
 with map_col:
     st.markdown("<div class='sh'>&#9632; Karnataka — Live Situation Map</div>", unsafe_allow_html=True)
-    with st.container():
-        st.markdown("<div class='gc' style='padding:0.5rem 0.5rem 0.3rem'>", unsafe_allow_html=True)
-        try:
-            from dashboard.map_builder import build_map
-            fmap = build_map(detections=detections, alerts=all_alerts, risk_zones=risk_zones)
-            st_folium(fmap, width=None, height=490, returned_objects=[])
-        except Exception as e:
-            st.error(f"Map error: {e}")
-            import traceback; st.code(traceback.format_exc())
-        st.markdown("</div>", unsafe_allow_html=True)
+    try:
+        from dashboard.map_builder import build_map
+        fmap = build_map(detections=detections, alerts=all_alerts, risk_zones=risk_zones)
+        st_folium(fmap, width=None, height=500, returned_objects=[])
+    except Exception as e:
+        st.error(f"Map error: {e}")
+        import traceback; st.code(traceback.format_exc())
     st.markdown(
-        "<div style='font-size:0.63rem;color:#4d7a56;margin-top:5px;padding:0 4px;line-height:1.6'>"
-        "&#9632; <span style='color:#fca5a5'>HIGH</span> &nbsp;"
-        "&#9632; <span style='color:#fcd34d'>MEDIUM</span> &nbsp;"
-        "&#9632; <span style='color:#b6f7a0'>LOW</span> &nbsp;&#183;&nbsp; "
-        "Green polygons = forest corridors &nbsp;&#183;&nbsp; Layer switcher (top-right) for Google Satellite"
+        "<div style='font-size:0.62rem;color:#4d7a56;margin-top:6px;line-height:1.7'>"
+        "&#9632; <span style='color:#fca5a5'>HIGH</span> &ensp;"
+        "&#9632; <span style='color:#fcd34d'>MEDIUM</span> &ensp;"
+        "&#9632; <span style='color:#b6f7a0'>LOW</span>"
+        "&ensp;&#183;&ensp;Green = forest corridors"
+        "&ensp;&#183;&ensp;Layer control (top-right) for Google Satellite"
         "</div>",
         unsafe_allow_html=True
     )
 
 with trace_col:
     st.markdown("<div class='sh'>&#9632; Agent Execution Trace</div>", unsafe_allow_html=True)
-    st.markdown("<div class='gc' style='height:530px;overflow-y:auto;padding:0.8rem 1rem'>", unsafe_allow_html=True)
-    trace_log = store.get_tool_trace_log(last_n=25)
+
+    # Build entire trace as one HTML block so it stays inside the card
+    trace_log = store.get_tool_trace_log(last_n=20)
+
     if trace_log:
+        # Group by agent run — dedupe repetitive tool pairs into clean steps
+        rows = []
+        seen = set()
         for entry in reversed(trace_log):
-            icon  = "<span style='color:#fca5a5'>&#10007;</span>" if entry.error else "<span style='color:#b6f7a0'>&#10003;</span>"
+            key = (entry.tool_name, entry.output_summary[:40])
+            if key in seen:
+                continue
+            seen.add(key)
+            icon  = "&#10003;" if not entry.error else "&#10007;"
+            iclr  = "#b6f7a0"  if not entry.error else "#fca5a5"
             ts    = entry.timestamp.strftime("%H:%M:%S")
-            err   = f"<br><span style='color:#fca5a5;font-size:0.68rem'>{entry.error[:70]}</span>" if entry.error else ""
-            st.markdown(
-                f"<div class='tr'>{icon} <b>{entry.tool_name}</b> "
-                f"<span class='ts'>{ts}</span><br>"
-                f"<span style='color:#6b9972'>{entry.output_summary[:100]}</span>{err}"
-                f"</div>",
-                unsafe_allow_html=True
+            err   = (f"<div style='color:#fca5a5;font-size:0.68rem;margin-top:1px'>"
+                     f"{entry.error[:80]}</div>") if entry.error else ""
+            rows.append(
+                f"<div style='border-left:2px solid rgba(166,255,140,0.2);"
+                f"padding:5px 10px;margin:3px 0;border-radius:0 8px 8px 0;"
+                f"background:rgba(166,255,140,0.02)'>"
+                f"<span style='color:{iclr};font-size:0.8rem'>{icon}</span>"
+                f"&nbsp;<span style='color:#c8e6cc;font-weight:600;font-size:0.78rem'>"
+                f"{entry.tool_name}</span>"
+                f"&nbsp;<span style='color:#3d6645;font-size:0.68rem'>{ts}</span>"
+                f"<div style='color:#6b9972;font-size:0.74rem;margin-top:1px'>"
+                f"{entry.output_summary[:90]}</div>"
+                f"{err}"
+                f"</div>"
             )
-    else:
-        st.markdown(
-            "<div style='color:#3d6645;font-size:0.78rem;text-align:center;padding:2rem 0'>"
-            "&#9632; No trace yet<br>Run the pipeline to see activity"
-            "</div>", unsafe_allow_html=True
+
+        trace_html = (
+            "<div style='"
+            "background:rgba(180,255,180,0.03);"
+            "border:1px solid rgba(180,255,180,0.1);"
+            "border-radius:16px;"
+            "padding:12px 14px;"
+            "max-height:500px;"
+            "overflow-y:auto;"
+            "'>"
+            + "".join(rows) +
+            "</div>"
         )
-    st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        trace_html = (
+            "<div style='"
+            "background:rgba(180,255,180,0.03);"
+            "border:1px solid rgba(180,255,180,0.1);"
+            "border-radius:16px;"
+            "padding:40px 14px;"
+            "text-align:center;"
+            "color:#3d6645;font-size:0.78rem;"
+            "'>"
+            "&#9632; No trace yet &mdash; run the pipeline to see activity"
+            "</div>"
+        )
+
+    st.markdown(trace_html, unsafe_allow_html=True)
 
 st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
