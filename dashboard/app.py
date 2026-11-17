@@ -1,13 +1,9 @@
 """
-dashboard/app.py — HEC Early Warning System — Streamlit Dashboard.
-Clay + Glassmorphism UI. No emojis — SVG/Unicode symbols only.
+dashboard/app.py — ECO-HERD Dashboard
+Pista green + amber yellow · Clay + Glassmorphism · Clean layout
 """
-
 from __future__ import annotations
-
-import sys
-import os
-import logging
+import sys, os, logging
 from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -18,189 +14,268 @@ from streamlit_folium import st_folium
 logging.basicConfig(level=logging.WARNING)
 
 st.set_page_config(
-    page_title="ECO-HERD — HEC Early Warning",
+    page_title="ECO-HERD — Early Warning",
     page_icon="🌿",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# ─── Global CSS — Clay + Glassmorphism ────────────────────────────────────────
+# ─── CSS ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-/* ── Fonts & base ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; }
 html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
-    background: #0d1f17 !important;
-    color: #e8f5ee !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    color: #f0faf2 !important;
 }
 
-/* ── App background ── */
+/* ── App BG — deep pista-black ── */
 .stApp {
-    background: linear-gradient(135deg, #0d1f17 0%, #0f2820 50%, #0a1a12 100%) !important;
+    background: radial-gradient(ellipse at 20% 0%, #0e2b1a 0%, #07160e 60%, #040d08 100%) !important;
     min-height: 100vh;
 }
 
-/* ── Hide Streamlit chrome ── */
+/* ── Hide chrome ── */
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 1.5rem 2rem !important; max-width: 100% !important; }
-
-/* ── Glass card ── */
-.glass-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 20px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+.block-container {
+    padding: 1.2rem 1.8rem 2rem !important;
+    max-width: 100% !important;
 }
 
-/* ── Clay card (raised, soft shadow) ── */
-.clay-card {
-    background: linear-gradient(145deg, #1a3d28, #152f1f);
-    border: 1px solid rgba(100,200,130,0.15);
-    border-radius: 24px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1rem;
-    box-shadow: 6px 6px 18px rgba(0,0,0,0.4), -2px -2px 8px rgba(255,255,255,0.03);
+/* ═══════════════════════════════
+   GLASS CARD
+═══════════════════════════════ */
+.gc {
+    background: rgba(180,255,180,0.045);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(180,255,180,0.12);
+    border-radius: 18px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-/* ── Clay metric card ── */
-.metric-clay {
-    background: linear-gradient(145deg, #1e4a30, #162d1e);
-    border: 1px solid rgba(100,200,130,0.18);
+/* ═══════════════════════════════
+   CLAY CARD — raised tactile
+═══════════════════════════════ */
+.cc {
+    background: linear-gradient(145deg, #1a4228, #102a18);
+    border: 1px solid rgba(166,255,140,0.14);
     border-radius: 20px;
     padding: 1.2rem 1.4rem;
-    text-align: center;
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.35), -2px -2px 6px rgba(255,255,255,0.04);
-    transition: transform 0.2s;
+    box-shadow: 5px 5px 16px rgba(0,0,0,0.45),
+                -2px -2px 7px rgba(166,255,140,0.04);
 }
-.metric-clay:hover { transform: translateY(-2px); }
-.metric-num { font-size: 2.2rem; font-weight: 700; color: #74d49a; line-height: 1.1; }
-.metric-label { font-size: 0.75rem; font-weight: 500; color: #8ab89a; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-.metric-delta { font-size: 0.7rem; color: #f59e0b; margin-top: 2px; }
 
-/* ── Status badge ── */
+/* ═══════════════════════════════
+   METRIC CARDS
+═══════════════════════════════ */
+.mc {
+    background: linear-gradient(150deg, #1c472b 0%, #0f2a19 100%);
+    border: 1px solid rgba(166,255,140,0.15);
+    border-radius: 16px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+    box-shadow: 4px 4px 14px rgba(0,0,0,0.4),
+                -1px -1px 5px rgba(166,255,140,0.04);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.mc:hover {
+    transform: translateY(-3px);
+    box-shadow: 6px 8px 20px rgba(0,0,0,0.5);
+}
+.mc-num  { font-size: 2rem; font-weight: 700; color: #b6f7a0; line-height: 1; }
+.mc-lbl  { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
+           text-transform: uppercase; color: #7bbf88; margin-top: 5px; }
+.mc-warn { font-size: 0.62rem; color: #f5c842; margin-top: 3px; }
+
+/* ═══════════════════════════════
+   BADGES
+═══════════════════════════════ */
 .badge {
     display: inline-block;
     padding: 2px 10px;
     border-radius: 100px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-}
-.badge-high   { background: rgba(220,38,38,0.2);  color: #fca5a5; border: 1px solid rgba(220,38,38,0.4); }
-.badge-medium { background: rgba(234,88,12,0.2);  color: #fdba74; border: 1px solid rgba(234,88,12,0.4); }
-.badge-low    { background: rgba(202,138,4,0.2);  color: #fde047; border: 1px solid rgba(202,138,4,0.4); }
-.badge-ok     { background: rgba(22,163,74,0.2);  color: #86efac; border: 1px solid rgba(22,163,74,0.4); }
-.badge-pending{ background: rgba(99,102,241,0.2); color: #c4b5fd; border: 1px solid rgba(99,102,241,0.4); }
-
-/* ── Section header ── */
-.section-head {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #74d49a;
-    margin-bottom: 0.8rem;
+}
+.b-high   { background: rgba(239,68,68,0.18);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
+.b-medium { background: rgba(245,158,11,0.18); color: #fcd34d; border: 1px solid rgba(245,158,11,0.35); }
+.b-low    { background: rgba(166,255,140,0.12); color: #b6f7a0; border: 1px solid rgba(166,255,140,0.3); }
+.b-ok     { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
+.b-pend   { background: rgba(245,196,30,0.15); color: #f5c842; border: 1px solid rgba(245,196,30,0.35); }
+
+/* ═══════════════════════════════
+   SECTION HEADER
+═══════════════════════════════ */
+.sh {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #b6f7a0;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
-.section-head::after {
+.sh::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(100,200,130,0.2);
+    background: linear-gradient(90deg, rgba(166,255,140,0.25), transparent);
 }
 
-/* ── Alert row ── */
-.alert-row {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
+/* ═══════════════════════════════
+   TRACE ROW
+═══════════════════════════════ */
+.tr {
+    border-left: 2px solid rgba(166,255,140,0.25);
+    padding: 3px 10px;
+    margin: 2px 0;
+    font-size: 0.75rem;
+    color: #90b898;
+    line-height: 1.4;
+}
+.tr b { color: #c8e6cc; }
+.tr .ts { color: #4d7a56; font-size: 0.68rem; }
+
+/* ═══════════════════════════════
+   ALERT CARD
+═══════════════════════════════ */
+.ac {
+    background: rgba(166,255,140,0.03);
+    border: 1px solid rgba(166,255,140,0.09);
     border-radius: 14px;
     padding: 1rem 1.2rem;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
-.alert-en { font-size: 0.88rem; color: #d1fae5; line-height: 1.5; margin: 6px 0; }
-.alert-kn { font-size: 0.85rem; color: #a7f3d0; line-height: 1.5; font-style: italic; }
+.ac-en { font-size: 0.85rem; color: #d4f5d8; line-height: 1.55; margin: 5px 0; }
+.ac-kn { font-size: 0.82rem; color: #9fd8a4; line-height: 1.55; font-style: italic; margin: 5px 0; }
+.ac-action { font-size: 0.72rem; color: #7bbf88; margin-top: 2px; }
 
-/* ── Trace entry ── */
-.trace-entry {
-    border-left: 3px solid rgba(100,200,130,0.3);
-    padding: 4px 10px;
-    margin: 3px 0;
-    font-size: 0.78rem;
-    color: #9fbeaa;
-}
-.trace-entry b { color: #c8e6d4; }
-
-/* ── Audit entry ── */
-.audit-entry {
-    padding: 4px 10px;
+/* ═══════════════════════════════
+   AUDIT ROW
+═══════════════════════════════ */
+.aur {
+    padding: 3px 10px 3px 12px;
     margin: 2px 0;
-    border-radius: 8px;
-    font-size: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
 }
+.aur .at { color: #4d7a56; min-width: 130px; }
+.aur .ae { font-weight: 600; }
 
-/* ── Buttons ── */
+/* ═══════════════════════════════
+   BUTTONS
+═══════════════════════════════ */
 .stButton > button {
-    background: linear-gradient(145deg, #22543d, #1a3d2d) !important;
-    color: #d1fae5 !important;
-    border: 1px solid rgba(100,200,130,0.25) !important;
-    border-radius: 12px !important;
+    background: linear-gradient(145deg, #1e5c34, #163f24) !important;
+    color: #c8f5cc !important;
+    border: 1px solid rgba(166,255,140,0.22) !important;
+    border-radius: 10px !important;
     font-weight: 500 !important;
-    font-size: 0.82rem !important;
-    padding: 0.45rem 1rem !important;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.3) !important;
-    transition: all 0.2s !important;
+    font-size: 0.8rem !important;
+    padding: 0.4rem 1rem !important;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.35) !important;
+    transition: all 0.18s !important;
+    width: 100%;
 }
 .stButton > button:hover {
-    background: linear-gradient(145deg, #276048, #1e4535) !important;
+    background: linear-gradient(145deg, #256e3d, #1b4d2b) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 4px 6px 14px rgba(0,0,0,0.4) !important;
+    box-shadow: 4px 5px 14px rgba(0,0,0,0.45) !important;
 }
 .stButton > button[kind="primary"] {
-    background: linear-gradient(145deg, #166534, #14532d) !important;
-    border-color: rgba(134,239,172,0.4) !important;
-    color: #bbf7d0 !important;
+    background: linear-gradient(145deg, #1f6b38, #165229) !important;
+    border-color: rgba(182,247,160,0.35) !important;
+    color: #d4f5d8 !important;
 }
 
-/* ── Inputs ── */
-.stTextInput input {
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
+/* ═══════════════════════════════
+   INPUTS
+═══════════════════════════════ */
+.stTextInput > div > div > input {
+    background: #ffffff !important;
+    border: 1px solid rgba(166,255,140,0.3) !important;
+    border-radius: 9px !important;
+    color: #0f2a19 !important;
+    font-size: 0.8rem !important;
+    padding: 6px 10px !important;
+    caret-color: #0f2a19 !important;
+}
+.stTextInput > div > div > input::placeholder {
+    color: #7a9e7e !important;
+}
+.stTextInput > div > div > input:focus {
+    border-color: rgba(166,255,140,0.6) !important;
+    box-shadow: 0 0 0 2px rgba(166,255,140,0.12) !important;
+    outline: none !important;
+}
+.stTextInput label { color: #7bbf88 !important; font-size: 0.72rem !important; }
+
+/* ═══════════════════════════════
+   EXPANDER
+═══════════════════════════════ */
+details > summary {
+    background: rgba(166,255,140,0.04) !important;
+    border: 1px solid rgba(166,255,140,0.1) !important;
     border-radius: 10px !important;
-    color: #e8f5ee !important;
-    font-size: 0.82rem !important;
+    color: #b6f7a0 !important;
+    font-size: 0.8rem !important;
+    padding: 8px 12px !important;
+    cursor: pointer;
 }
-
-/* ── Expander ── */
 .streamlit-expanderHeader {
-    background: rgba(255,255,255,0.04) !important;
+    background: rgba(166,255,140,0.04) !important;
+    border-radius: 10px !important;
+    color: #b6f7a0 !important;
+    font-size: 0.8rem !important;
+}
+.streamlit-expanderContent {
+    border: 1px solid rgba(166,255,140,0.08) !important;
+    border-top: none !important;
+    border-radius: 0 0 10px 10px !important;
+    background: rgba(0,0,0,0.15) !important;
+}
+
+/* ═══════════════════════════════
+   ALERTS / TOASTS
+═══════════════════════════════ */
+.stAlert {
     border-radius: 12px !important;
-    color: #c8e6d4 !important;
     font-size: 0.82rem !important;
 }
 
-/* ── Divider ── */
-hr { border-color: rgba(255,255,255,0.07) !important; }
+/* ═══════════════════════════════
+   SPINNER
+═══════════════════════════════ */
+.stSpinner > div { border-top-color: #b6f7a0 !important; }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 5px; }
+/* ═══════════════════════════════
+   SCROLLBAR
+═══════════════════════════════ */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(100,200,130,0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(166,255,140,0.25); border-radius: 10px; }
 
-/* ── Info / Warning / Success ── */
-.stAlert { border-radius: 14px !important; }
+/* ═══════════════════════════════
+   COLUMN GAP FIX
+═══════════════════════════════ */
+[data-testid="column"] { padding: 0 6px !important; }
 </style>
 """, unsafe_allow_html=True)
 
-
-# ─── Lazy imports ──────────────────────────────────────────────────────────────
+# ─── Helpers ──────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def _get_store():
     from memory.store import store
@@ -211,13 +286,10 @@ def _get_orchestrator():
     import orchestrator
     return orchestrator
 
-def _load_risk_zones():
+def _load_risk_zones(store, confirmed):
     try:
         from tools.map_tools import compute_risk_zones
         from tools.data_fetcher import get_weather, get_crop_calendar
-        store = _get_store()
-        detections = store.get_detections()
-        confirmed = [d for d in detections if d.is_elephant and not d.requires_hitl_review]
         if not confirmed:
             return []
         weather = get_weather()
@@ -227,285 +299,372 @@ def _load_risk_zones():
     except Exception:
         return []
 
+def _badge(level):
+    cls = {"HIGH": "b-high", "MEDIUM": "b-medium", "LOW": "b-low"}.get(level, "b-ok")
+    return f"<span class='badge {cls}'>{level}</span>"
 
 store = _get_store()
 orch  = _get_orchestrator()
 
-# ─── Header ───────────────────────────────────────────────────────────────────
+# ─── Pull live data once ───────────────────────────────────────────────────────
+detections     = store.get_detections()
+all_alerts     = store.get_all_alerts()
+confirmed      = [d for d in detections if d.is_elephant and not d.requires_hitl_review]
+hitl_queue     = store.get_hitl_queue()
+pending_alerts = store.get_pending_alerts()
+dispatched     = [a for a in all_alerts if a.status.value == "DISPATCHED"]
+risk_zones     = _load_risk_zones(store, confirmed)
+last_run       = store.get_last_run()
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HEADER
+# ══════════════════════════════════════════════════════════════════════════════
 st.markdown("""
-<div class="glass-card" style="margin-bottom:1.2rem;padding:1.2rem 1.8rem">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <div>
-      <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.14em;color:#74d49a;text-transform:uppercase">
-        Karnataka Forest Department &nbsp;·&nbsp; Agentic AI Early Warning
-      </div>
-      <div style="font-size:1.6rem;font-weight:700;color:#ffffff;line-height:1.2;margin-top:2px">
-        ECO-HERD &nbsp;<span style="font-weight:300;color:#74d49a">Human-Elephant Conflict System</span>
-      </div>
+<div style="
+    background: linear-gradient(135deg, rgba(26,66,40,0.9) 0%, rgba(10,30,16,0.95) 100%);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(166,255,140,0.14);
+    border-radius: 20px;
+    padding: 1.1rem 1.6rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+">
+  <div>
+    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.18em;
+        color:#b6f7a0;text-transform:uppercase;margin-bottom:3px">
+      Karnataka Forest Department &nbsp;&#183;&nbsp; Agentic AI Early Warning
     </div>
+    <div style="font-size:1.55rem;font-weight:700;color:#ffffff;line-height:1.15;letter-spacing:-0.01em">
+      ECO&#8209;HERD
+      <span style="font-weight:300;font-size:1rem;color:#8ed4a0;letter-spacing:0">
+        &nbsp;Human&#8209;Elephant Conflict System
+      </span>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div style="width:8px;height:8px;border-radius:50%;background:#b6f7a0;
+        box-shadow:0 0 8px #b6f7a0;animation:none"></div>
+    <span style="font-size:0.68rem;color:#7bbf88">Live</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ─── Controls ─────────────────────────────────────────────────────────────────
-ctrl1, ctrl2, ctrl3 = st.columns([2, 2, 5])
-with ctrl1:
+# ══════════════════════════════════════════════════════════════════════════════
+# CONTROLS BAR
+# ══════════════════════════════════════════════════════════════════════════════
+c1, c2, c3 = st.columns([1.5, 1.5, 6])
+with c1:
     run_clicked = st.button("▶  Run Pipeline", type="primary", use_container_width=True)
-with ctrl2:
-    refresh_clicked = st.button("↺  Refresh", use_container_width=True)
-with ctrl3:
-    last_run = store.get_last_run()
+with c2:
+    if st.button("↺  Refresh", use_container_width=True):
+        st.rerun()
+with c3:
     if last_run and last_run.end_time:
-        end_str = last_run.end_time.strftime("%H:%M:%S UTC")
+        ts = last_run.end_time.strftime("%d %b %Y · %H:%M UTC")
+        errs = len(last_run.errors)
+        err_col = "#fca5a5" if errs else "#b6f7a0"
         st.markdown(
-            f"<div style='font-size:0.75rem;color:#8ab89a;padding-top:10px'>"
-            f"Last run: <b style='color:#c8e6d4'>{end_str}</b> &nbsp;·&nbsp; "
-            f"Agents: <b style='color:#c8e6d4'>{len(last_run.agents_run)}</b> &nbsp;·&nbsp; "
-            f"Errors: <b style='color:{'#fca5a5' if last_run.errors else '#86efac'}'>{len(last_run.errors)}</b>"
+            f"<div style='padding-top:9px;font-size:0.74rem;color:#7bbf88'>"
+            f"Last run &nbsp;<b style='color:#d4f5d8'>{ts}</b>"
+            f"&nbsp;·&nbsp; {len(last_run.agents_run)} agents"
+            f"&nbsp;·&nbsp; <span style='color:{err_col}'>{errs} error{'s' if errs!=1 else ''}</span>"
             f"</div>",
             unsafe_allow_html=True
         )
     else:
-        st.markdown("<div style='font-size:0.75rem;color:#8ab89a;padding-top:10px'>No pipeline run yet — click Run Pipeline to start.</div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='padding-top:9px;font-size:0.74rem;color:#4d7a56'>"
+            "No run yet &nbsp;&#8212;&nbsp; click Run Pipeline to start"
+            "</div>", unsafe_allow_html=True
+        )
 
 if run_clicked:
-    with st.spinner("Running 3-agent pipeline..."):
+    with st.spinner("Running 3-agent pipeline…"):
         try:
             report = orch.run_once(hours_back=24)
-            st.success(f"Pipeline complete — {len(report.agents_run)} agents ran · {report.alerts_pending} alerts pending · {report.hitl_flagged_count} HITL flagged")
+            st.success(
+                f"Pipeline complete — {len(report.agents_run)} agents · "
+                f"{report.alerts_pending} alerts pending · "
+                f"{report.hitl_flagged_count} HITL flagged"
+            )
         except Exception as e:
             st.error(f"Pipeline error: {e}")
     st.rerun()
 
-if refresh_clicked:
-    st.rerun()
+st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
 
-st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
-
-# ─── Metrics row ──────────────────────────────────────────────────────────────
-detections    = store.get_detections()
-all_alerts    = store.get_all_alerts()
-risk_zones    = _load_risk_zones()
-confirmed     = [d for d in detections if d.is_elephant and not d.requires_hitl_review]
-hitl_pending  = store.get_hitl_queue()
-pending_alerts = store.get_pending_alerts()
-dispatched    = [a for a in all_alerts if a.status.value == "DISPATCHED"]
-
-m1, m2, m3, m4, m5 = st.columns(5)
+# ══════════════════════════════════════════════════════════════════════════════
+# METRIC ROW  — 5 cards
+# ══════════════════════════════════════════════════════════════════════════════
 metrics = [
-    (str(len(detections)), "Detections", None),
-    (str(len(confirmed)),  "Confirmed", None),
-    (str(len(hitl_pending)), "HITL Queue", "Review needed" if hitl_pending else None),
-    (str(len(pending_alerts)), "Pending Approval", "Awaiting officer" if pending_alerts else None),
-    (str(len(dispatched)), "Dispatched", None),
+    (len(detections),     "Detections",      None),
+    (len(confirmed),      "Confirmed",        None),
+    (len(hitl_queue),     "HITL Queue",       "Review needed" if hitl_queue else None),
+    (len(pending_alerts), "Pending Approval", "Needs officer"  if pending_alerts else None),
+    (len(dispatched),     "Dispatched",       None),
 ]
-for col, (num, label, delta) in zip([m1,m2,m3,m4,m5], metrics):
-    delta_html = f"<div class='metric-delta'>{delta}</div>" if delta else ""
+cols = st.columns(5, gap="small")
+for col, (num, lbl, warn) in zip(cols, metrics):
+    warn_html = f"<div class='mc-warn'>&#9650; {warn}</div>" if warn else ""
     col.markdown(
-        f"<div class='metric-clay'>"
-        f"<div class='metric-num'>{num}</div>"
-        f"<div class='metric-label'>{label}</div>"
-        f"{delta_html}"
+        f"<div class='mc'>"
+        f"<div class='mc-num'>{num}</div>"
+        f"<div class='mc-lbl'>{lbl}</div>"
+        f"{warn_html}"
         f"</div>",
         unsafe_allow_html=True
     )
 
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 
-# ─── Main layout: Map | Agent Trace ───────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# MAP  +  AGENT TRACE
+# ══════════════════════════════════════════════════════════════════════════════
 map_col, trace_col = st.columns([3, 2], gap="medium")
 
 with map_col:
-    st.markdown("<div class='section-head'>&#9632; Karnataka Live Situation Map</div>", unsafe_allow_html=True)
-    st.markdown("<div class='glass-card' style='padding:0.6rem'>", unsafe_allow_html=True)
-    try:
-        from dashboard.map_builder import build_map
-        fmap = build_map(detections=detections, alerts=all_alerts, risk_zones=risk_zones)
-        st_folium(fmap, width=None, height=500, returned_objects=[])
-    except Exception as e:
-        st.error(f"Map error: {e}")
-        import traceback; st.code(traceback.format_exc())
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sh'>&#9632; Karnataka — Live Situation Map</div>", unsafe_allow_html=True)
+    with st.container():
+        st.markdown("<div class='gc' style='padding:0.5rem 0.5rem 0.3rem'>", unsafe_allow_html=True)
+        try:
+            from dashboard.map_builder import build_map
+            fmap = build_map(detections=detections, alerts=all_alerts, risk_zones=risk_zones)
+            st_folium(fmap, width=None, height=490, returned_objects=[])
+        except Exception as e:
+            st.error(f"Map error: {e}")
+            import traceback; st.code(traceback.format_exc())
+        st.markdown("</div>", unsafe_allow_html=True)
     st.markdown(
-        "<div style='font-size:0.68rem;color:#8ab89a;margin-top:4px;padding:0 4px'>"
-        "&#9632; HIGH &nbsp;&#9632; MEDIUM &nbsp;&#9632; LOW &nbsp;·&nbsp; "
-        "Forest corridors shown in green &nbsp;·&nbsp; Use layer control (top-right) to switch to Google Satellite"
+        "<div style='font-size:0.63rem;color:#4d7a56;margin-top:5px;padding:0 4px;line-height:1.6'>"
+        "&#9632; <span style='color:#fca5a5'>HIGH</span> &nbsp;"
+        "&#9632; <span style='color:#fcd34d'>MEDIUM</span> &nbsp;"
+        "&#9632; <span style='color:#b6f7a0'>LOW</span> &nbsp;&#183;&nbsp; "
+        "Green polygons = forest corridors &nbsp;&#183;&nbsp; Layer switcher (top-right) for Google Satellite"
         "</div>",
         unsafe_allow_html=True
     )
 
 with trace_col:
-    st.markdown("<div class='section-head'>&#9632; Agent Execution Trace</div>", unsafe_allow_html=True)
-    st.markdown("<div class='glass-card' style='max-height:520px;overflow-y:auto'>", unsafe_allow_html=True)
-    trace_log = store.get_tool_trace_log(last_n=20)
+    st.markdown("<div class='sh'>&#9632; Agent Execution Trace</div>", unsafe_allow_html=True)
+    st.markdown("<div class='gc' style='height:530px;overflow-y:auto;padding:0.8rem 1rem'>", unsafe_allow_html=True)
+    trace_log = store.get_tool_trace_log(last_n=25)
     if trace_log:
         for entry in reversed(trace_log):
-            icon = "&#10007;" if entry.error else "&#10003;"
-            icon_color = "#fca5a5" if entry.error else "#86efac"
-            ts = entry.timestamp.strftime("%H:%M:%S")
+            icon  = "<span style='color:#fca5a5'>&#10007;</span>" if entry.error else "<span style='color:#b6f7a0'>&#10003;</span>"
+            ts    = entry.timestamp.strftime("%H:%M:%S")
+            err   = f"<br><span style='color:#fca5a5;font-size:0.68rem'>{entry.error[:70]}</span>" if entry.error else ""
             st.markdown(
-                f"<div class='trace-entry'>"
-                f"<span style='color:{icon_color}'>{icon}</span> "
-                f"<b>{entry.tool_name}</b> "
-                f"<span style='color:#6b8c76;font-size:0.7rem'>{ts}</span><br>"
-                f"<span style='color:#7fa88a'>{entry.output_summary[:90]}</span>"
-                f"{'<br><span style=color:#fca5a5>' + entry.error[:60] + '</span>' if entry.error else ''}"
+                f"<div class='tr'>{icon} <b>{entry.tool_name}</b> "
+                f"<span class='ts'>{ts}</span><br>"
+                f"<span style='color:#6b9972'>{entry.output_summary[:100]}</span>{err}"
                 f"</div>",
                 unsafe_allow_html=True
             )
     else:
-        st.markdown("<div style='color:#6b8c76;font-size:0.8rem;padding:8px'>No tool trace yet. Run the pipeline to see activity.</div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='color:#3d6645;font-size:0.78rem;text-align:center;padding:2rem 0'>"
+            "&#9632; No trace yet<br>Run the pipeline to see activity"
+            "</div>", unsafe_allow_html=True
+        )
     st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
-# ─── HITL Verification Queue ──────────────────────────────────────────────────
-st.markdown("<div class='section-head'>&#9650; HITL Verification Queue &mdash; Low Confidence Detections</div>", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# HITL QUEUE
+# ══════════════════════════════════════════════════════════════════════════════
+st.markdown(
+    "<div class='sh'>&#9650; HITL Verification Queue</div>",
+    unsafe_allow_html=True
+)
 
-if not hitl_pending:
+if not hitl_queue:
     st.markdown(
-        "<div class='clay-card' style='color:#86efac;font-size:0.85rem'>"
-        "&#10003; &nbsp; HITL queue is empty — all detections are above the confidence threshold."
+        "<div class='cc' style='color:#b6f7a0;font-size:0.82rem'>"
+        "&#10003;&nbsp; HITL queue is empty — all detections above the confidence threshold."
         "</div>", unsafe_allow_html=True
     )
 else:
     st.markdown(
-        f"<div style='font-size:0.8rem;color:#fde047;margin-bottom:0.6rem'>"
-        f"&#9650; &nbsp; {len(hitl_pending)} detection(s) require forest officer verification."
+        f"<div style='font-size:0.76rem;color:#f5c842;margin-bottom:0.6rem'>"
+        f"&#9650;&nbsp; {len(hitl_queue)} detection(s) require forest officer verification"
+        f"&nbsp;(threshold: 0.70)"
         f"</div>", unsafe_allow_html=True
     )
-    for item in hitl_pending:
+    for item in hitl_queue:
         det = item.detection
         with st.expander(
-            f"Event {det.event_id[:8]}  ·  {det.nearest_village}  ·  Confidence: {int(det.detection_confidence*100)}%  ·  {det.district}",
+            f"Event {det.event_id[:8]}  ·  {det.nearest_village}  ·  "
+            f"Conf {int(det.detection_confidence*100)}%  ·  {det.district}",
             expanded=True
         ):
-            hc1, hc2 = st.columns([3, 1])
-            with hc1:
+            left, right = st.columns([3, 1], gap="medium")
+            with left:
                 st.markdown(
-                    f"<div class='glass-card'>"
-                    f"<div style='font-size:0.8rem;color:#c8e6d4;margin-bottom:6px'>"
-                    f"Confidence: <b style='color:#fde047'>{det.detection_confidence:.2f}</b>"
-                    f" &nbsp;/&nbsp; Threshold: <b>0.70</b>"
-                    f" &nbsp;·&nbsp; In corridor: <b>{'Yes' if det.in_corridor else 'No'}</b>"
-                    f" &nbsp;·&nbsp; Nearest village: <b>{det.nearest_village}</b> ({det.distance_km:.1f} km)"
+                    f"<div class='ac'>"
+                    f"<div style='font-size:0.78rem;color:#b6f7a0;margin-bottom:6px'>"
+                    f"Confidence: <b style='color:#f5c842'>{det.detection_confidence:.2f}</b>"
+                    f"&nbsp;/&nbsp;threshold 0.70"
+                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;In corridor: <b>{'Yes' if det.in_corridor else 'No'}</b>"
+                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;Village: <b>{det.nearest_village}</b> ({det.distance_km:.1f} km)"
                     f"</div>"
-                    f"<div style='font-size:0.8rem;color:#9fbeaa;font-style:italic'>{det.explanation[:300]}</div>"
-                    f"</div>", unsafe_allow_html=True
+                    f"<div style='font-size:0.78rem;color:#7bbf88;line-height:1.5'>"
+                    f"{det.explanation[:300]}"
+                    f"</div>"
+                    f"</div>",
+                    unsafe_allow_html=True
                 )
-            with hc2:
-                officer_id = st.text_input("Officer ID", value="KFD-RO-001", key=f"hitl_o_{item.item_id}")
-                if st.button("Approve Detection", key=f"hitl_a_{item.item_id}", type="primary", use_container_width=True):
+            with right:
+                oid = st.text_input("Officer ID", value="KFD-RO-001", key=f"ho_{item.item_id}")
+                if st.button("Approve Detection", key=f"ha_{item.item_id}", type="primary"):
                     from schemas import HitlVerdict
-                    if orch.resolve_hitl(item.item_id, HitlVerdict.APPROVED, officer_id):
+                    if orch.resolve_hitl(item.item_id, HitlVerdict.APPROVED, oid):
                         st.success("Approved.")
                         st.rerun()
-                if st.button("Reject — False Alarm", key=f"hitl_r_{item.item_id}", use_container_width=True):
+                if st.button("Reject  — False Alarm", key=f"hr_{item.item_id}"):
                     from schemas import HitlVerdict
-                    if orch.resolve_hitl(item.item_id, HitlVerdict.REJECTED, officer_id, notes="Rejected via dashboard"):
+                    if orch.resolve_hitl(item.item_id, HitlVerdict.REJECTED, oid, notes="Rejected via dashboard"):
                         st.info("Marked as false alarm.")
                         st.rerun()
 
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
-# ─── Pending Alerts ───────────────────────────────────────────────────────────
-st.markdown("<div class='section-head'>&#9679; Pending Alerts &mdash; Awaiting Forest Officer Approval</div>", unsafe_allow_html=True)
+# ══════════════════════════════════════════════════════════════════════════════
+# PENDING ALERTS
+# ══════════════════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div style='font-size:0.72rem;color:#8ab89a;margin-bottom:0.6rem'>"
-    "No alert is dispatched without explicit forest officer approval. HITL gate is non-negotiable."
+    "<div class='sh'>&#9679; Pending Alerts &mdash; Forest Officer Approval</div>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    "<div style='font-size:0.68rem;color:#4d7a56;margin-bottom:0.7rem'>"
+    "&#8212;&nbsp; No alert is dispatched without explicit forest officer approval (HITL gate, non-negotiable)"
     "</div>", unsafe_allow_html=True
 )
 
 if not pending_alerts:
     st.markdown(
-        "<div class='clay-card' style='color:#86efac;font-size:0.85rem'>"
-        "&#10003; &nbsp; No alerts pending approval."
+        "<div class='cc' style='color:#b6f7a0;font-size:0.82rem'>"
+        "&#10003;&nbsp; No alerts pending approval."
         "</div>", unsafe_allow_html=True
     )
 else:
     st.markdown(
-        f"<div style='font-size:0.8rem;color:#fde047;margin-bottom:0.6rem'>"
-        f"&#9679; &nbsp; {len(pending_alerts)} alert(s) awaiting your approval before community dispatch."
+        f"<div style='font-size:0.76rem;color:#f5c842;margin-bottom:0.6rem'>"
+        f"&#9679;&nbsp; {len(pending_alerts)} alert(s) awaiting your approval"
         f"</div>", unsafe_allow_html=True
     )
     for alert in pending_alerts:
         level = alert.alert_level.value
-        badge_cls = {"HIGH": "badge-high", "MEDIUM": "badge-medium", "LOW": "badge-low"}.get(level, "badge-ok")
+        badge_cls = {"HIGH": "b-high", "MEDIUM": "b-medium", "LOW": "b-low"}.get(level, "b-ok")
         with st.expander(
-            f"{level}  —  {alert.village} ({alert.district})  ·  Risk: {alert.village_risk_score:.2f}  ·  Det. Conf: {alert.detection_confidence:.2f}",
+            f"{level}  ·  {alert.village}, {alert.district}"
+            f"  ·  Risk {alert.village_risk_score:.2f}"
+            f"  ·  Conf {alert.detection_confidence:.2f}",
             expanded=(level == "HIGH")
         ):
-            ac1, ac2 = st.columns([3, 1])
-            with ac1:
+            left, right = st.columns([3, 1], gap="medium")
+            with left:
                 st.markdown(
-                    f"<div class='glass-card'>"
-                    f"<div style='margin-bottom:8px'>"
+                    f"<div class='ac'>"
+                    # top row — badge + scores
+                    f"<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>"
                     f"<span class='badge {badge_cls}'>{level}</span>"
-                    f"<span style='font-size:0.75rem;color:#8ab89a;margin-left:10px'>"
-                    f"Village Risk Score: <b style='color:#c8e6d4'>{alert.village_risk_score:.2f}</b> &nbsp;·&nbsp; "
-                    f"Detection Confidence: <b style='color:#c8e6d4'>{alert.detection_confidence:.2f}</b>"
+                    f"<span style='font-size:0.72rem;color:#7bbf88'>"
+                    f"Village Risk Score <b style='color:#d4f5d8'>{alert.village_risk_score:.2f}</b>"
+                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;"
+                    f"Detection Confidence <b style='color:#d4f5d8'>{alert.detection_confidence:.2f}</b>"
                     f"</span></div>"
-                    f"<div style='font-size:0.75rem;color:#8ab89a;margin-bottom:6px;font-style:italic'>{alert.risk_explanation}</div>"
-                    f"<div class='alert-en'><b style='color:#74d49a'>EN</b> &nbsp; {alert.message_en}</div>"
-                    f"<div class='alert-kn'><b style='color:#74d49a'>KN</b> &nbsp; {alert.message_kn}</div>"
-                    f"{''.join(f'<div style=\"font-size:0.75rem;color:#9fbeaa;margin-top:3px\">&#8226; {a}</div>' for a in alert.recommended_actions[:4])}"
-                    f"</div>", unsafe_allow_html=True
+                    # risk explanation
+                    f"<div style='font-size:0.72rem;color:#7bbf88;margin-bottom:7px;'>"
+                    f"{alert.risk_explanation}</div>"
+                    # EN message
+                    f"<div class='ac-en'>"
+                    f"<span style='font-size:0.63rem;font-weight:700;letter-spacing:0.08em;"
+                    f"color:#b6f7a0;text-transform:uppercase;margin-right:8px'>EN</span>"
+                    f"{alert.message_en}</div>"
+                    # KN message
+                    f"<div class='ac-kn'>"
+                    f"<span style='font-size:0.63rem;font-weight:700;letter-spacing:0.08em;"
+                    f"color:#b6f7a0;text-transform:uppercase;margin-right:8px;font-style:normal'>KN</span>"
+                    f"{alert.message_kn}</div>"
+                    # actions
+                    f"<div style='margin-top:8px;padding-top:8px;border-top:1px solid rgba(166,255,140,0.08)'>"
+                    + "".join(
+                        f"<div class='ac-action'>&#8250; {a}</div>"
+                        for a in alert.recommended_actions[:4]
+                    ) +
+                    f"</div>"
+                    f"</div>",
+                    unsafe_allow_html=True
                 )
-            with ac2:
+            with right:
+                st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
                 officer = st.text_input("Officer ID", value="KFD-RO-001", key=f"ao_{alert.alert_id}")
-                if st.button("Approve & Dispatch", key=f"aa_{alert.alert_id}", type="primary", use_container_width=True):
+                if st.button("Approve & Dispatch", key=f"aa_{alert.alert_id}", type="primary"):
                     if orch.approve_alert(alert.alert_id, officer):
                         st.success(f"Dispatched to {alert.village}.")
                         st.rerun()
-                reject_reason = st.text_input("Rejection reason", key=f"ar_reason_{alert.alert_id}", placeholder="Optional")
-                if st.button("Reject Alert", key=f"ar_{alert.alert_id}", use_container_width=True):
-                    if orch.reject_alert(alert.alert_id, officer, reject_reason):
+                st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
+                reason = st.text_input("Reject reason", key=f"rr_{alert.alert_id}", placeholder="Optional")
+                if st.button("Reject Alert", key=f"ra_{alert.alert_id}"):
+                    if orch.reject_alert(alert.alert_id, officer, reason):
                         st.info("Rejected and logged.")
                         st.rerun()
 
-st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
-# ─── Audit Log ────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# AUDIT LOG
+# ══════════════════════════════════════════════════════════════════════════════
 with st.expander("Audit Log — last 10 events", expanded=False):
     from audit.log import read_audit_log
     entries = read_audit_log(last_n=10)
     if entries:
-        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+        COLOURS = {
+            "ALERT_APPROVED":    "#b6f7a0",
+            "ALERT_REJECTED":    "#fca5a5",
+            "HITL_FLAGGED":      "#f5c842",
+            "HITL_RESOLVED":     "#93c5fd",
+            "PIPELINE_RUN_START":"#c4b5fd",
+            "PIPELINE_RUN_END":  "#c4b5fd",
+            "ALERT_CREATED":     "#67e8f9",
+        }
+        st.markdown("<div class='gc' style='padding:0.8rem 1rem'>", unsafe_allow_html=True)
         for entry in reversed(entries):
-            ts  = entry.get("timestamp", "")[:19].replace("T", " ")
-            evt = entry.get("event_type", "")
+            ts      = entry.get("timestamp", "")[:19].replace("T", " ")
+            evt     = entry.get("event_type", "")
             payload = entry.get("payload", {})
-            colour = {
-                "ALERT_APPROVED":   "#86efac",
-                "ALERT_REJECTED":   "#fca5a5",
-                "HITL_FLAGGED":     "#fde047",
-                "HITL_RESOLVED":    "#93c5fd",
-                "PIPELINE_RUN_START": "#c4b5fd",
-                "PIPELINE_RUN_END":   "#c4b5fd",
-                "ALERT_CREATED":    "#67e8f9",
-            }.get(evt, "#6b8c76")
-            detail = ""
+            colour  = COLOURS.get(evt, "#4d7a56")
+            detail  = ""
             if "village" in payload:
-                detail = f" &mdash; {payload['village']}"
+                detail = f"&nbsp;&mdash;&nbsp;{payload['village']}"
             elif "detection_id" in payload:
-                detail = f" &mdash; detection {str(payload.get('detection_id',''))[:8]}&hellip;"
+                detail = f"&nbsp;&mdash;&nbsp;detection {str(payload.get('detection_id',''))[:8]}&hellip;"
             st.markdown(
-                f"<div class='audit-entry' style='border-left:3px solid {colour}'>"
-                f"<span style='color:#6b8c76;font-size:0.7rem'>{ts}</span> "
-                f"<b style='color:{colour};font-size:0.75rem'>{evt}</b>"
-                f"<span style='color:#8ab89a;font-size:0.72rem'>{detail}</span>"
+                f"<div class='aur' style='border-left:2px solid {colour}'>"
+                f"<span class='at'>{ts}</span>"
+                f"<span class='ae' style='color:{colour}'>{evt}</span>"
+                f"<span style='color:#7bbf88;font-size:0.7rem'>{detail}</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
         st.markdown("</div>", unsafe_allow_html=True)
     else:
-        st.markdown("<div style='color:#6b8c76;font-size:0.8rem;padding:8px'>No audit entries yet.</div>", unsafe_allow_html=True)
+        st.markdown(
+            "<div style='color:#3d6645;font-size:0.78rem;padding:8px'>No audit entries yet.</div>",
+            unsafe_allow_html=True
+        )
 
-# ─── Footer ───────────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# FOOTER
+# ══════════════════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div style='text-align:center;font-size:0.65rem;color:#4a7a5a;margin-top:1.5rem;padding-top:1rem;"
-    "border-top:1px solid rgba(255,255,255,0.05)'>"
-    "ECO-HERD &nbsp;·&nbsp; Karnataka Forest Department &nbsp;·&nbsp; "
+    "<div style='text-align:center;font-size:0.6rem;color:#2d5235;"
+    "margin-top:2rem;padding-top:0.8rem;"
+    "border-top:1px solid rgba(166,255,140,0.07)'>"
+    "ECO&#8209;HERD &nbsp;&#183;&nbsp; Karnataka Forest Department &nbsp;&#183;&nbsp; "
     "Synthetic data only &mdash; does not represent real elephant movements"
     "</div>",
     unsafe_allow_html=True
