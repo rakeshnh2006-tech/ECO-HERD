@@ -3,8 +3,9 @@ dashboard/app.py — ECO-HERD Dashboard
 Pista green + amber yellow · Clay + Glassmorphism · Clean layout
 """
 from __future__ import annotations
-import sys, os, logging
+import sys, os, logging, base64
 from datetime import datetime, timezone
+from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -13,9 +14,20 @@ from streamlit_folium import st_folium
 
 logging.basicConfig(level=logging.WARNING)
 
+# ── Load logo as base64 for inline embedding ──────────────────────────────────
+def _logo_b64() -> str:
+    try:
+        logo_path = Path(__file__).parent / "logo.png"
+        return base64.b64encode(logo_path.read_bytes()).decode()
+    except Exception:
+        return ""
+
+_LOGO = _logo_b64()
+_LOGO_SRC = f"data:image/png;base64,{_LOGO}" if _LOGO else ""
+
 st.set_page_config(
     page_title="ECO-HERD — Early Warning",
-    page_icon="🌿",
+    page_icon=str(Path(__file__).parent / "logo.png") if (Path(__file__).parent / "logo.png").exists() else "🌿",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -319,36 +331,51 @@ last_run       = store.get_last_run()
 # ══════════════════════════════════════════════════════════════════════════════
 # HEADER
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
+_logo_html = (
+    f"<img src='{_LOGO_SRC}' style='"
+    f"width:72px;height:72px;object-fit:contain;"
+    f"border-radius:50%;border:2px solid rgba(166,255,140,0.25);"
+    f"background:rgba(255,255,255,0.08);padding:4px;"
+    f"box-shadow:0 0 16px rgba(166,255,140,0.2);"
+    f"flex-shrink:0"
+    f"'/>"
+    if _LOGO_SRC else ""
+)
+
+st.markdown(
+    f"""
 <div style="
-    background: linear-gradient(135deg, rgba(26,66,40,0.9) 0%, rgba(10,30,16,0.95) 100%);
+    background: linear-gradient(135deg, rgba(26,66,40,0.92) 0%, rgba(10,30,16,0.97) 100%);
     backdrop-filter: blur(24px);
-    border: 1px solid rgba(166,255,140,0.14);
+    border: 1px solid rgba(166,255,140,0.15);
     border-radius: 20px;
-    padding: 1.1rem 1.6rem;
+    padding: 1rem 1.6rem;
     margin-bottom: 1rem;
     box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
 ">
-  <div>
-    <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.18em;
+  {_logo_html}
+  <div style="flex:1;min-width:200px">
+    <div style="font-size:0.58rem;font-weight:700;letter-spacing:0.18em;
         color:#b6f7a0;text-transform:uppercase;margin-bottom:3px">
       Karnataka Forest Department &nbsp;&#183;&nbsp; Agentic AI Early Warning
     </div>
-    <div style="font-size:1.55rem;font-weight:700;color:#ffffff;line-height:1.15;letter-spacing:-0.01em">
+    <div style="font-size:1.5rem;font-weight:700;color:#ffffff;line-height:1.2;letter-spacing:-0.01em">
       ECO&#8209;HERD
-      <span style="font-weight:300;font-size:1rem;color:#8ed4a0;letter-spacing:0">
+      <span style="font-weight:300;font-size:0.95rem;color:#8ed4a0">
         &nbsp;Human&#8209;Elephant Conflict System
       </span>
     </div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center">
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
     <div style="width:8px;height:8px;border-radius:50%;background:#b6f7a0;
-        box-shadow:0 0 8px #b6f7a0;animation:none"></div>
-    <span style="font-size:0.68rem;color:#7bbf88">Live</span>
+        box-shadow:0 0 10px #b6f7a0"></div>
+    <span style="font-size:0.68rem;color:#7bbf88;font-weight:500">Live</span>
   </div>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONTROLS BAR
