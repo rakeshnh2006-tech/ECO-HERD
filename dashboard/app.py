@@ -243,20 +243,6 @@ st.markdown("""
         ECO-HERD &nbsp;<span style="font-weight:300;color:#74d49a">Human-Elephant Conflict System</span>
       </div>
     </div>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <span style="font-size:0.68rem;color:#8ab89a;background:rgba(255,255,255,0.05);
-        padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.1)">
-        IBM Granite 4
-      </span>
-      <span style="font-size:0.68rem;color:#8ab89a;background:rgba(255,255,255,0.05);
-        padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.1)">
-        Gemini 2.5 Flash
-      </span>
-      <span style="font-size:0.68rem;color:#8ab89a;background:rgba(255,255,255,0.05);
-        padding:4px 12px;border-radius:100px;border:1px solid rgba(255,255,255,0.1)">
-        Groq
-      </span>
-    </div>
   </div>
 </div>
 """, unsafe_allow_html=True)
