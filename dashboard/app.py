@@ -315,6 +315,16 @@ details > summary {
 @st.cache_resource(show_spinner=False)
 def _get_store():
     from memory.store import store
+    # Auto-seed mock data if the store is empty (LLM APIs unavailable / first load)
+    if not store.get_detections():
+        try:
+            import importlib, sys
+            _root = os.path.join(os.path.dirname(__file__), "..")
+            if _root not in sys.path:
+                sys.path.insert(0, _root)
+            import mock_seed  # noqa: F401 — side-effect: seeds the store
+        except Exception:
+            pass  # silently skip if mock_seed missing or broken
     return store
 
 @st.cache_resource(show_spinner=False)
