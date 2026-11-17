@@ -1,0 +1,7 @@
+district,temperature_c,rainfall_mm,humidity_pct,month,source
+Hassan,24.0,1.5,68.0,11,IMD_historical_avg
+Kodagu,22.5,8.0,82.0,11,IMD_historical_avg
+Chikkamagaluru,23.0,3.0,72.0,11,IMD_historical_avg
+Mysuru,25.0,0.5,60.0,11,IMD_historical_avg
+Chamarajanagar,26.0,0.2,58.0,11,IMD_historical_avg
+Ramanagara,24.5,0.8,62.0,11,IMD_historical_avg

@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "data_source": "karnataka_open_data_cached",
+  "note": "Approximate elephant corridors and forest zones for Karnataka forest-edge districts. Coordinates are illustrative for demonstration purposes.",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[75.6, 11.9], [76.3, 11.9], [76.3, 12.6], [75.6, 12.6], [75.6, 11.9]]]
+      },
+      "properties": {
+        "name": "Kodagu Forest Zone",
+        "type": "protected_forest",
+        "district": "Kodagu",
+        "area_sqkm": 4102
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[76.1, 11.9], [77.0, 11.9], [77.0, 12.5], [76.1, 12.5], [76.1, 11.9]]]
+      },
+      "properties": {
+        "name": "Mysuru-Nagarhole Corridor",
+        "type": "elephant_corridor",
+        "district": "Mysuru",
+        "area_sqkm": 643
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[76.5, 11.5], [77.3, 11.5], [77.3, 12.1], [76.5, 12.1], [76.5, 11.5]]]
+      },
+      "properties": {
+        "name": "Chamarajanagar-BRT Zone",
+        "type": "protected_forest",
+        "district": "Chamarajanagar",
+        "area_sqkm": 540
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[75.5, 12.9], [76.1, 12.9], [76.1, 13.6], [75.5, 13.6], [75.5, 12.9]]]
+      },
+      "properties": {
+        "name": "Chikkamagaluru Forest Zone",
+        "type": "protected_forest",
+        "district": "Chikkamagaluru",
+        "area_sqkm": 1140
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[75.90, 12.00], [76.10, 12.15], [76.30, 12.30], [76.50, 12.42], [76.70, 12.50]]
+      },
+      "properties": {
+        "name": "Kodagu-Hassan Primary Corridor",
+        "type": "elephant_movement_corridor",
+        "districts": ["Kodagu", "Hassan"],
+        "usage": "high"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[76.20, 11.95], [76.50, 12.00], [76.70, 12.10], [76.90, 12.20], [77.10, 11.90]]
+      },
+      "properties": {
+        "name": "Mysuru-Chamarajanagar Corridor",
+        "type": "elephant_movement_corridor",
+        "districts": ["Mysuru", "Chamarajanagar"],
+        "usage": "high"
+      }
+    }
+  ]
+}
