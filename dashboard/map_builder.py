@@ -15,7 +15,6 @@ import logging
 from typing import Optional
 
 import folium
-from folium.plugins import MiniMap
 
 import config
 from schemas import Alert, AlertStatus, Detection, RiskLevel, RiskZone
@@ -61,39 +60,46 @@ def build_map(
     corridor_geojson : GeoJSON FeatureCollection of forest/corridor boundaries
     """
     # --- Base tile layer ---
-    # Use Google Maps satellite+hybrid when API key is present, else CartoDB
+    # Always start with OpenStreetMap as a guaranteed working base layer,
+    # then add Google Maps tiles on top when the API key is present.
+    m = folium.Map(
+        location=_KA_CENTER,
+        zoom_start=_KA_ZOOM,
+        tiles=None,           # We add all tile layers manually
+        control_scale=True,
+    )
+
+    # OpenStreetMap — always available, no key needed, renders on Streamlit Cloud
+    folium.TileLayer(
+        tiles="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attr='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        name="🗺️ OpenStreetMap",
+        overlay=False,
+        control=True,
+        show=True,          # default base layer
+        max_zoom=19,
+    ).add_to(m)
+
+    # Google Maps tiles — only when API key is set
     google_key = config.GOOGLE_MAPS_API_KEY
     if google_key:
-        # Google Maps Hybrid (satellite + labels) via their tile API
-        google_hybrid_url = (
-            "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
-            f"&key={google_key}"
-        )
-        google_satellite_url = (
-            "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-            f"&key={google_key}"
-        )
-        google_road_url = (
-            "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-            f"&key={google_key}"
-        )
-        m = folium.Map(
-            location=_KA_CENTER,
-            zoom_start=_KA_ZOOM,
-            tiles=None,          # no default tile layer — we add manually below
-            control_scale=True,
-        )
         folium.TileLayer(
-            tiles=google_hybrid_url,
+            tiles=(
+                "https://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}"
+                f"&key={google_key}"
+            ),
             attr="© Google Maps",
             name="🛰️ Google Satellite+Labels",
             overlay=False,
             control=True,
-            show=True,
+            show=False,
             max_zoom=21,
         ).add_to(m)
         folium.TileLayer(
-            tiles=google_satellite_url,
+            tiles=(
+                "https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
+                f"&key={google_key}"
+            ),
             attr="© Google Maps",
             name="🛰️ Google Satellite",
             overlay=False,
@@ -102,7 +108,10 @@ def build_map(
             max_zoom=21,
         ).add_to(m)
         folium.TileLayer(
-            tiles=google_road_url,
+            tiles=(
+                "https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}"
+                f"&key={google_key}"
+            ),
             attr="© Google Maps",
             name="🗺️ Google Roads",
             overlay=False,
@@ -110,18 +119,16 @@ def build_map(
             show=False,
             max_zoom=21,
         ).add_to(m)
-        logger.info("Using Google Maps tiles (satellite+hybrid)")
+        logger.info("Google Maps tiles added (satellite+hybrid+roads)")
     else:
-        m = folium.Map(
-            location=_KA_CENTER,
-            zoom_start=_KA_ZOOM,
-            tiles="CartoDB positron",
-            control_scale=True,
-        )
-        logger.info("Using CartoDB tiles (no Google Maps key configured)")
+        logger.info("No GOOGLE_MAPS_API_KEY — using OpenStreetMap only")
 
-    # Mini-map for navigation context (OpenStreetMap — no API key needed)
-    MiniMap(toggle_display=True, tile_layer="OpenStreetMap").add_to(m)
+    # Mini-map for navigation context (safe — catches import errors on older folium)
+    try:
+        from folium.plugins import MiniMap
+        MiniMap(toggle_display=True, tile_layer="OpenStreetMap").add_to(m)
+    except Exception:
+        pass  # MiniMap is optional — map still works without it
 
     # --- Layer groups ---
     corridor_layer = folium.FeatureGroup(name="Forest Corridors", show=True)
