@@ -1,0 +1,102 @@
+[
+  {
+    "id": "13553c9f-eb08-4f09-8ca7-9b8c3cc0e900",
+    "lat": 11.874,
+    "lon": 76.764,
+    "timestamp": "2026-11-17T07:33:27.823308Z",
+    "sensor_type": "vibration",
+    "triggered": true,
+    "district": "Chamarajanagar",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "55ec65bb-46d3-4c13-a1a5-33fc11fa780c",
+    "lat": 11.96448,
+    "lon": 76.72509,
+    "timestamp": "2026-11-17T12:16:23.823323Z",
+    "sensor_type": "vibration",
+    "triggered": true,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "7fd79a10-4754-4e78-aa10-0bb92017681f",
+    "lat": 12.4298,
+    "lon": 76.03456,
+    "timestamp": "2026-11-16T19:50:37.823332Z",
+    "sensor_type": "seismic",
+    "triggered": true,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "55d62d73-f7ca-49ae-9c9d-233bdf855a40",
+    "lat": 11.79951,
+    "lon": 77.02104,
+    "timestamp": "2026-11-17T09:52:17.823337Z",
+    "sensor_type": "seismic",
+    "triggered": true,
+    "district": "Chamarajanagar",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "ed9e9a3b-5f09-49dc-a97a-cfc831dc5307",
+    "lat": 12.25445,
+    "lon": 75.94216,
+    "timestamp": "2026-11-17T11:57:47.823342Z",
+    "sensor_type": "acoustic",
+    "triggered": true,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "4a54fe77-e2c6-436d-91c0-01ca5bd50ca4",
+    "lat": 12.6056,
+    "lon": 76.2166,
+    "timestamp": "2026-11-17T14:06:08.823347Z",
+    "sensor_type": "seismic",
+    "triggered": true,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "9a525461-0027-48ed-b05e-f4df08da196c",
+    "lat": 12.73261,
+    "lon": 75.66691,
+    "timestamp": "2026-11-16T16:47:46.823351Z",
+    "sensor_type": "infrared",
+    "triggered": true,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "2822e65e-f701-4a5a-b26a-6a50f84b5b82",
+    "lat": 11.87733,
+    "lon": 76.75646,
+    "timestamp": "2026-11-17T05:08:53.823355Z",
+    "sensor_type": "acoustic",
+    "triggered": true,
+    "district": "Chamarajanagar",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "6111072c-a8b8-4d4c-b162-925f0fcd0aae",
+    "lat": 11.93082,
+    "lon": 76.79255,
+    "timestamp": "2026-11-17T02:24:04.823359Z",
+    "sensor_type": "vibration",
+    "triggered": true,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "1c17deac-482b-4cc5-9e28-25e70636f7df",
+    "lat": 12.12723,
+    "lon": 76.98229,
+    "timestamp": "2026-11-16T16:05:24.823363Z",
+    "sensor_type": "acoustic",
+    "triggered": true,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  }
+]

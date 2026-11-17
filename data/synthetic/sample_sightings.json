@@ -1,0 +1,222 @@
+[
+  {
+    "id": "c6c4e915-d1c0-4453-86d6-30a83db16536",
+    "lat": 12.55567,
+    "lon": 77.37078,
+    "timestamp": "2026-11-17T10:36:14.821558Z",
+    "confidence": 0.58,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "e6c543bc-7725-47af-9ea9-aa325e69f43e",
+    "lat": 12.55125,
+    "lon": 77.37033,
+    "timestamp": "2026-11-16T18:11:06.821896Z",
+    "confidence": 0.75,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "3c860fec-03c1-4a80-9cde-e7e788782ebb",
+    "lat": 11.91907,
+    "lon": 76.18433,
+    "timestamp": "2026-11-16T17:45:56.821909Z",
+    "confidence": 0.58,
+    "source": "synthetic_gps_collar",
+    "district": "Mysuru",
+    "notes": "Synthetic GPS collar ping \u2014 Mysuru sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "7531a0fa-65c0-4371-8878-dfcc30a497e3",
+    "lat": 13.18062,
+    "lon": 76.32961,
+    "timestamp": "2026-11-17T00:24:36.821915Z",
+    "confidence": 0.84,
+    "source": "synthetic_gps_collar",
+    "district": "Hassan",
+    "notes": "Synthetic GPS collar ping \u2014 Hassan sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "cb9be492-2eb4-4585-91c0-2161ac3cb819",
+    "lat": 12.21445,
+    "lon": 75.79473,
+    "timestamp": "2026-11-17T09:52:17.821921Z",
+    "confidence": 0.93,
+    "source": "synthetic_gps_collar",
+    "district": "Kodagu",
+    "notes": "Synthetic GPS collar ping \u2014 Kodagu sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "ac0f9fa7-e3c9-4028-8ea2-4fe635a0c90a",
+    "lat": 12.71131,
+    "lon": 77.13894,
+    "timestamp": "2026-11-17T03:25:45.821926Z",
+    "confidence": 0.57,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "111c0581-83db-403d-928d-1cb7130a298b",
+    "lat": 12.94637,
+    "lon": 75.95803,
+    "timestamp": "2026-11-16T17:42:12.821930Z",
+    "confidence": 0.92,
+    "source": "synthetic_gps_collar",
+    "district": "Hassan",
+    "notes": "Synthetic GPS collar ping \u2014 Hassan sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "3d98b241-3f2b-4cf5-9d71-81f6dd5e193a",
+    "lat": 13.46499,
+    "lon": 75.93784,
+    "timestamp": "2026-11-17T01:54:08.821934Z",
+    "confidence": 0.74,
+    "source": "synthetic_gps_collar",
+    "district": "Chikkamagaluru",
+    "notes": "Synthetic GPS collar ping \u2014 Chikkamagaluru sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "b5d61f4f-0b40-48ca-9e85-dc7a1b0fd657",
+    "lat": 13.17602,
+    "lon": 76.39764,
+    "timestamp": "2026-11-17T02:31:03.821938Z",
+    "confidence": 0.79,
+    "source": "synthetic_gps_collar",
+    "district": "Hassan",
+    "notes": "Synthetic GPS collar ping \u2014 Hassan sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "8185b07c-1545-4855-9c3e-45cd800721ed",
+    "lat": 11.61537,
+    "lon": 76.55564,
+    "timestamp": "2026-11-17T05:08:53.821942Z",
+    "confidence": 0.81,
+    "source": "synthetic_gps_collar",
+    "district": "Chamarajanagar",
+    "notes": "Synthetic GPS collar ping \u2014 Chamarajanagar sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "30d8770f-e147-4be9-b5bc-be7caf6f981a",
+    "lat": 13.32766,
+    "lon": 76.41989,
+    "timestamp": "2026-11-16T23:10:34.821945Z",
+    "confidence": 0.66,
+    "source": "synthetic_gps_collar",
+    "district": "Hassan",
+    "notes": "Synthetic GPS collar ping \u2014 Hassan sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "6b753f46-8009-45d4-8343-efcd9eb1d5d7",
+    "lat": 12.91706,
+    "lon": 77.08133,
+    "timestamp": "2026-11-17T05:57:50.821949Z",
+    "confidence": 0.65,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "fb26fa55-55c1-42de-b44f-e9481d733842",
+    "lat": 12.96833,
+    "lon": 77.32402,
+    "timestamp": "2026-11-17T09:27:12.821953Z",
+    "confidence": 0.79,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "a3df0bb3-1df1-4534-8473-01c0f2e2cee6",
+    "lat": 11.93748,
+    "lon": 76.63072,
+    "timestamp": "2026-11-16T16:22:57.821956Z",
+    "confidence": 0.66,
+    "source": "synthetic_gps_collar",
+    "district": "Chamarajanagar",
+    "notes": "Synthetic GPS collar ping \u2014 Chamarajanagar sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "10e59639-f671-4861-9040-599ede630e50",
+    "lat": 12.77847,
+    "lon": 77.34231,
+    "timestamp": "2026-11-17T13:38:52.821960Z",
+    "confidence": 0.91,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "c30f468b-ceca-4fb4-bbc8-d93a49b49039",
+    "lat": 12.47526,
+    "lon": 76.16353,
+    "timestamp": "2026-11-17T13:16:28.821963Z",
+    "confidence": 0.67,
+    "source": "synthetic_gps_collar",
+    "district": "Kodagu",
+    "notes": "Synthetic GPS collar ping \u2014 Kodagu sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "7e7e2b1d-88d5-4d4a-840a-030271ad1cc4",
+    "lat": 12.5392,
+    "lon": 75.99703,
+    "timestamp": "2026-11-17T07:56:34.821967Z",
+    "confidence": 0.84,
+    "source": "synthetic_gps_collar",
+    "district": "Kodagu",
+    "notes": "Synthetic GPS collar ping \u2014 Kodagu sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "c281147b-37a1-4a3f-967d-dc77b60d42c0",
+    "lat": 12.74962,
+    "lon": 77.44234,
+    "timestamp": "2026-11-17T10:28:57.821971Z",
+    "confidence": 0.8,
+    "source": "synthetic_gps_collar",
+    "district": "Ramanagara",
+    "notes": "Synthetic GPS collar ping \u2014 Ramanagara sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "9868ae52-8018-4417-aa98-3c6662bca9c6",
+    "lat": 12.99774,
+    "lon": 75.94699,
+    "timestamp": "2026-11-16T18:24:01.821975Z",
+    "confidence": 0.75,
+    "source": "synthetic_gps_collar",
+    "district": "Chikkamagaluru",
+    "notes": "Synthetic GPS collar ping \u2014 Chikkamagaluru sector",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "bcb7cd45-29a7-4592-b5d3-7ac91a818f9a",
+    "lat": 12.43869,
+    "lon": 76.45946,
+    "timestamp": "2026-11-17T10:38:52.821978Z",
+    "confidence": 0.57,
+    "source": "synthetic_gps_collar",
+    "district": "Mysuru",
+    "notes": "Synthetic GPS collar ping \u2014 Mysuru sector",
+    "data_source": "synthetic"
+  }
+]

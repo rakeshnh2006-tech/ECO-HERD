@@ -2,6 +2,7 @@
 dashboard/map_builder.py — Folium map builder for the HEC Early Warning dashboard.
 
 Builds a Karnataka-centered map with:
+- Google Maps satellite/hybrid tiles (when GOOGLE_MAPS_API_KEY is set)
 - Village markers colour-coded by village_risk_score
 - Elephant detection markers with explanation popups
 - Risk zone polygon overlays
@@ -14,7 +15,9 @@ import logging
 from typing import Optional
 
 import folium
+from folium.plugins import MiniMap
 
+import config
 from schemas import Alert, AlertStatus, Detection, RiskLevel, RiskZone
 
 logger = logging.getLogger(__name__)
@@ -57,12 +60,68 @@ def build_map(
     risk_zones   : RiskZone list from compute_risk_zones
     corridor_geojson : GeoJSON FeatureCollection of forest/corridor boundaries
     """
-    m = folium.Map(
-        location=_KA_CENTER,
-        zoom_start=_KA_ZOOM,
-        tiles="CartoDB positron",
-        control_scale=True,
-    )
+    # --- Base tile layer ---
+    # Use Google Maps satellite+hybrid when API key is present, else CartoDB
+    google_key = config.GOOGLE_MAPS_API_KEY
+    if google_key:
+        # Google Maps Hybrid (satellite + labels) via their tile API
+        google_hybrid_url = (
+            "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+            f"&key={google_key}"
+        )
+        google_satellite_url = (
+            "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+            f"&key={google_key}"
+        )
+        google_road_url = (
+            "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+            f"&key={google_key}"
+        )
+        m = folium.Map(
+            location=_KA_CENTER,
+            zoom_start=_KA_ZOOM,
+            tiles=None,          # no default tile layer — we add manually below
+            control_scale=True,
+        )
+        folium.TileLayer(
+            tiles=google_hybrid_url,
+            attr="© Google Maps",
+            name="🛰️ Google Satellite+Labels",
+            overlay=False,
+            control=True,
+            show=True,
+            max_zoom=21,
+        ).add_to(m)
+        folium.TileLayer(
+            tiles=google_satellite_url,
+            attr="© Google Maps",
+            name="🛰️ Google Satellite",
+            overlay=False,
+            control=True,
+            show=False,
+            max_zoom=21,
+        ).add_to(m)
+        folium.TileLayer(
+            tiles=google_road_url,
+            attr="© Google Maps",
+            name="🗺️ Google Roads",
+            overlay=False,
+            control=True,
+            show=False,
+            max_zoom=21,
+        ).add_to(m)
+        logger.info("Using Google Maps tiles (satellite+hybrid)")
+    else:
+        m = folium.Map(
+            location=_KA_CENTER,
+            zoom_start=_KA_ZOOM,
+            tiles="CartoDB positron",
+            control_scale=True,
+        )
+        logger.info("Using CartoDB tiles (no Google Maps key configured)")
+
+    # Mini-map for navigation context (OpenStreetMap — no API key needed)
+    MiniMap(toggle_display=True, tile_layer="OpenStreetMap").add_to(m)
 
     # --- Layer groups ---
     corridor_layer = folium.FeatureGroup(name="Forest Corridors", show=True)

@@ -1,0 +1,87 @@
+{
+  "scenario_name": "Night Incursion \u2014 Kodagu, Day 1",
+  "sightings": [
+    {
+      "id": "9f7da007-77b0-42a5-91ec-0f63e45c21b1",
+      "lat": 11.99808,
+      "lon": 76.544,
+      "timestamp": "2026-11-17T16:00:00Z",
+      "confidence": 0.83,
+      "source": "gps_collar_KA_H3",
+      "district": "Kodagu",
+      "notes": "Collar ping \u2014 herd KA-H3 tracked through Kodagu-Mysuru corridor",
+      "data_source": "synthetic"
+    },
+    {
+      "id": "8b4840ba-fbf1-40b0-9a5e-e3d0c10e029b",
+      "lat": 12.02497,
+      "lon": 76.5952,
+      "timestamp": "2026-11-17T16:45:00Z",
+      "confidence": 0.85,
+      "source": "gps_collar_KA_H3",
+      "district": "Kodagu",
+      "notes": "Collar ping \u2014 herd KA-H3 tracked through Kodagu-Mysuru corridor",
+      "data_source": "synthetic"
+    },
+    {
+      "id": "f90d1a52-9fc4-4b56-b5a2-65d615193868",
+      "lat": 12.06766,
+      "lon": 76.63369,
+      "timestamp": "2026-11-17T17:30:00Z",
+      "confidence": 0.9,
+      "source": "gps_collar_KA_H3",
+      "district": "Kodagu",
+      "notes": "Collar ping \u2014 herd KA-H3 tracked through Kodagu-Mysuru corridor",
+      "data_source": "synthetic"
+    }
+  ],
+  "camera_trap_events": [
+    {
+      "id": "97c580c0-1f95-4c38-92ce-be2293e52c30",
+      "lat": 12.05,
+      "lon": 76.6,
+      "timestamp": "2026-11-17T16:50:00Z",
+      "image_description": "Herd of 4-6 elephants crossing open ground towards farmland.",
+      "image_b64": null,
+      "confidence": 0.92,
+      "district": "Kodagu",
+      "data_source": "synthetic"
+    },
+    {
+      "id": "cf771871-75ba-474e-9b3f-7ee1668cbcfb",
+      "lat": 12.09,
+      "lon": 76.64,
+      "timestamp": "2026-11-17T17:10:00Z",
+      "image_description": "Night image: eye shine and partial outline, species unconfirmed.",
+      "image_b64": null,
+      "confidence": 0.48,
+      "district": "Mysuru",
+      "data_source": "synthetic"
+    }
+  ],
+  "sensor_events": [
+    {
+      "id": "6c3cd764-50ce-40e3-a130-fa73b64c89d9",
+      "lat": 12.06,
+      "lon": 76.62,
+      "timestamp": "2026-11-17T16:55:00Z",
+      "sensor_type": "acoustic",
+      "triggered": true,
+      "district": "Kodagu",
+      "data_source": "synthetic"
+    }
+  ],
+  "patrol_logs": [
+    {
+      "id": "9718a50e-3408-4182-a23c-3e52279ac28c",
+      "officer_id": "KFD-RO-003",
+      "lat": 12.02,
+      "lon": 76.57,
+      "timestamp": "2026-11-17T16:20:00Z",
+      "notes": "Fresh elephant tracks observed near village boundary.",
+      "district": "Kodagu",
+      "data_source": "synthetic"
+    }
+  ],
+  "synthetic_disclaimer": "\u26a0\ufe0f  SYNTHETIC DATA: Real-time feed records (sightings, camera trap events, sensor triggers, patrol logs) are computer-generated for demonstration purposes. They do NOT represent actual elephant movements or real field observations."
+}

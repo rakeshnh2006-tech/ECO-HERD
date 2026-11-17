@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ecbfb7e7-f1b9-4f54-8955-53bbba6f4f15",
+    "officer_id": "KFD-RO-002",
+    "lat": 12.55567,
+    "lon": 77.37078,
+    "timestamp": "2026-11-17T07:33:27.823508Z",
+    "notes": "Villager reported hearing elephant calls during night. No visual confirmation.",
+    "district": "Ramanagara",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "a8f9a200-e3fb-4008-b8b2-1f02a96afe1b",
+    "officer_id": "KFD-RO-005",
+    "lat": 12.55125,
+    "lon": 77.37033,
+    "timestamp": "2026-11-17T12:31:08.823517Z",
+    "notes": "Camera trap SD card collected. Device functional.",
+    "district": "Ramanagara",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "45357448-b309-49bb-80b4-26048571c73d",
+    "officer_id": "KFD-RO-002",
+    "lat": 11.91907,
+    "lon": 76.18433,
+    "timestamp": "2026-11-16T21:17:06.823522Z",
+    "notes": "Camera trap SD card collected. Device functional.",
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "fd76068e-6343-4ead-b8e8-1f5bc1f13429",
+    "officer_id": "KFD-RO-006",
+    "lat": 13.18062,
+    "lon": 76.32961,
+    "timestamp": "2026-11-16T19:50:37.823527Z",
+    "notes": "Water source (tank) shows signs of elephant activity \u2014 disturbed banks.",
+    "district": "Hassan",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "974fa8c9-4b94-41ea-9b21-7e234c3cccd6",
+    "officer_id": "KFD-RO-001",
+    "lat": 12.21445,
+    "lon": 75.79473,
+    "timestamp": "2026-11-17T09:52:17.823531Z",
+    "notes": "Water source (tank) shows signs of elephant activity \u2014 disturbed banks.",
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "f23e026c-2485-46e3-84be-cd52a30a7f61",
+    "officer_id": "KFD-RO-003",
+    "lat": 13.09451,
+    "lon": 75.62919,
+    "timestamp": "2026-11-17T11:57:47.823535Z",
+    "notes": "Crop damage (ragi field) reported by farmer. Evidence consistent with elephant.",
+    "district": "Chikkamagaluru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "93473f7e-4461-4026-9748-c1e8b1c269b4",
+    "officer_id": "KFD-RO-005",
+    "lat": 11.95803,
+    "lon": 76.86274,
+    "timestamp": "2026-11-17T06:03:12.823539Z",
+    "notes": "Fresh elephant tracks observed near village boundary.",
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "f0243754-1832-4e09-9433-28e208b08a97",
+    "officer_id": "KFD-RO-004",
+    "lat": 12.72971,
+    "lon": 77.06241,
+    "timestamp": "2026-11-17T12:48:55.823542Z",
+    "notes": "No incidents to report in this sector.",
+    "district": "Ramanagara",
+    "data_source": "synthetic"
+  }
+]

@@ -54,6 +54,11 @@ OMNIROUTE_API_KEY: str = _optional("OMNIROUTE_API_KEY")
 OMNIROUTE_BASE_URL: str = _optional("OMNIROUTE_BASE_URL", "https://omniroute.online/v1")
 
 # ---------------------------------------------------------------------------
+# Google Maps
+# ---------------------------------------------------------------------------
+GOOGLE_MAPS_API_KEY: str = _optional("GOOGLE_MAPS_API_KEY")
+
+# ---------------------------------------------------------------------------
 # HITL thresholds
 # ---------------------------------------------------------------------------
 # Detections with confidence below this threshold are flagged for manual review.

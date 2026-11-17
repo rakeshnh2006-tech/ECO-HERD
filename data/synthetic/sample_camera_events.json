@@ -1,0 +1,167 @@
+[
+  {
+    "id": "2e2470b0-d826-4665-a5e6-8a5b2e6e53e3",
+    "lat": 12.44416,
+    "lon": 75.97449,
+    "timestamp": "2026-11-16T19:49:41.822818Z",
+    "image_description": "Herd of 4-6 elephants crossing open ground towards farmland.",
+    "image_b64": null,
+    "confidence": 0.89,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "a8519fbb-43d2-49b8-9ba2-2ad51c8b5d67",
+    "lat": 12.75318,
+    "lon": 75.65937,
+    "timestamp": "2026-11-17T14:43:05.822831Z",
+    "image_description": "Single elephant with tusks feeding on sugarcane crop at night.",
+    "image_b64": null,
+    "confidence": 0.8,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "5355e389-fbaf-4823-b528-828bda196c39",
+    "lat": 12.77204,
+    "lon": 75.70893,
+    "timestamp": "2026-11-17T09:52:17.822839Z",
+    "image_description": "Adult male elephant with one tusk visible, feeding at forest edge.",
+    "image_b64": null,
+    "confidence": 0.95,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "fecf94ab-0dcf-4db3-bd8c-94e66fa9f0be",
+    "lat": 12.52779,
+    "lon": 76.17153,
+    "timestamp": "2026-11-17T12:18:27.822844Z",
+    "image_description": "Adult male elephant with one tusk visible, feeding at forest edge.",
+    "image_b64": null,
+    "confidence": 0.73,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "867ff3ff-480b-4e70-9c80-be47cfe07cf3",
+    "lat": 12.58475,
+    "lon": 76.21037,
+    "timestamp": "2026-11-16T22:57:26.822849Z",
+    "image_description": "Adult male elephant with one tusk visible, feeding at forest edge.",
+    "image_b64": null,
+    "confidence": 0.62,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "d15c3407-3d2e-4f9b-a87f-c66353d8c7f5",
+    "lat": 12.75788,
+    "lon": 75.67932,
+    "timestamp": "2026-11-17T02:31:03.822853Z",
+    "image_description": "Lone elephant near village water tank, estimated 50m from houses.",
+    "image_b64": null,
+    "confidence": 0.85,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "8da5d9de-ce7c-417f-9c58-4a63c28d798b",
+    "lat": 11.90458,
+    "lon": 76.77279,
+    "timestamp": "2026-11-17T07:12:31.822858Z",
+    "image_description": "Motion-triggered image: unclear animal shape, possible elephant.",
+    "image_b64": null,
+    "confidence": 0.64,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "8e12c652-e7b4-48d9-950a-f6bd10ecb483",
+    "lat": 12.06678,
+    "lon": 76.67212,
+    "timestamp": "2026-11-17T02:44:57.822863Z",
+    "image_description": "Two adults with one juvenile crossing dry stream bed.",
+    "image_b64": null,
+    "confidence": 0.67,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "9738eda7-cc60-4488-ae86-4f8c99b93271",
+    "lat": 11.77018,
+    "lon": 77.11835,
+    "timestamp": "2026-11-17T09:27:12.822867Z",
+    "image_description": "Partial flank and trunk visible in undergrowth near water source.",
+    "image_b64": null,
+    "confidence": 0.84,
+    "district": "Chamarajanagar",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "6164b0cc-b3ab-4dd6-84e1-42e94a568afb",
+    "lat": 12.06634,
+    "lon": 76.93795,
+    "timestamp": "2026-11-16T19:24:23.822872Z",
+    "image_description": "High-confidence sighting: adult female with calf at known corridor crossing.",
+    "image_b64": null,
+    "confidence": 0.86,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "1a6dca13-2711-4346-9ca2-65b480ac582a",
+    "lat": 12.58429,
+    "lon": 76.2276,
+    "timestamp": "2026-11-17T04:11:56.822876Z",
+    "image_description": "Single elephant with tusks feeding on sugarcane crop at night.",
+    "image_b64": null,
+    "confidence": 0.93,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "487ea903-1b04-4348-9449-4334bd83d397",
+    "lat": 11.9211,
+    "lon": 76.84429,
+    "timestamp": "2026-11-17T07:56:34.822880Z",
+    "image_description": "High-confidence sighting: adult female with calf at known corridor crossing.",
+    "image_b64": null,
+    "confidence": 0.89,
+    "district": "Mysuru",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "1e055b3e-372e-4dac-a1f0-669f651bf891",
+    "lat": 12.83847,
+    "lon": 75.71429,
+    "timestamp": "2026-11-17T06:42:18.822884Z",
+    "image_description": "Herd of 4-6 elephants crossing open ground towards farmland.",
+    "image_b64": null,
+    "confidence": 0.71,
+    "district": "Unknown",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "5034353d-7136-4162-aca9-d804f2ebf02b",
+    "lat": 11.65764,
+    "lon": 76.96767,
+    "timestamp": "2026-11-17T02:30:16.822888Z",
+    "image_description": "High-confidence sighting: adult female with calf at known corridor crossing.",
+    "image_b64": null,
+    "confidence": 0.83,
+    "district": "Chamarajanagar",
+    "data_source": "synthetic"
+  },
+  {
+    "id": "acf65e7f-573c-4b7d-a70b-b8367f46a471",
+    "lat": 12.30095,
+    "lon": 75.85909,
+    "timestamp": "2026-11-17T10:07:10.822891Z",
+    "image_description": "Large pachyderm silhouette visible at forest edge, estimated adult bull.",
+    "image_b64": null,
+    "confidence": 0.94,
+    "district": "Kodagu",
+    "data_source": "synthetic"
+  }
+]
