@@ -4,11 +4,11 @@ enableCORS = false
 enableXsrfProtection = false
 
 [theme]
-base = "dark"
-primaryColor = "#b6f7a0"
-backgroundColor = "#07160e"
-secondaryBackgroundColor = "#0f2a19"
-textColor = "#f0faf2"
+base = "light"
+primaryColor = "#246B49"
+backgroundColor = "#F4F7F2"
+secondaryBackgroundColor = "#EAF4EC"
+textColor = "#183629"
 font = "sans serif"
 
 [browser]

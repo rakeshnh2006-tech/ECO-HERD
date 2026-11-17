@@ -1,6 +1,6 @@
 """
 dashboard/app.py — ECO-HERD Dashboard
-Pista green + amber yellow · Clay + Glassmorphism · Clean layout
+Forest Intelligence · Premium enterprise design
 """
 from __future__ import annotations
 import sys, os, logging, base64
@@ -27,263 +27,287 @@ _LOGO_SRC = f"data:image/png;base64,{_LOGO}" if _LOGO else ""
 
 st.set_page_config(
     page_title="ECO-HERD — Early Warning",
-    page_icon=str(Path(__file__).parent / "logo.png") if (Path(__file__).parent / "logo.png").exists() else "🌿",
+    page_icon=str(Path(__file__).parent / "logo.png") if (Path(__file__).parent / "logo.png").exists() else "&#127807;",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# ─── CSS ──────────────────────────────────────────────────────────────────────
+# ─── CSS — Forest Intelligence Theme ─────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* ── Reset & base ── */
-*, *::before, *::after { box-sizing: border-box; }
-html, body, [class*="css"] {
-    font-family: 'Inter', system-ui, sans-serif !important;
-    color: #f0faf2 !important;
+/* ══ Design tokens ══════════════════════════════════════════════════════════ */
+:root {
+    --c-dark:    #123B2A;
+    --c-forest:  #246B49;
+    --c-accent:  #72B788;
+    --c-bg:      #F4F7F2;
+    --c-card:    #FFFFFF;
+    --c-soft:    #EAF4EC;
+    --c-txt:     #183629;
+    --c-muted:   #64776B;
+    --c-border:  #D0E5D8;
+    --c-amber:   #F4B942;
+    --c-red:     #D93636;
+    --c-blue:    #2878B8;
+    --c-shadow:  rgba(18,59,42,0.08);
+    --c-shadow-md: rgba(18,59,42,0.13);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
-/* ── App BG — deep pista-black ── */
+/* ══ Reset & base ══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, [class*="css"] {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    color: var(--c-txt) !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ══ App background ════════════════════════════════════════════════════════ */
 .stApp {
-    background: radial-gradient(ellipse at 20% 0%, #0e2b1a 0%, #07160e 60%, #040d08 100%) !important;
+    background-color: var(--c-bg) !important;
     min-height: 100vh;
 }
 
-/* ── Hide chrome ── */
+/* ══ Hide Streamlit chrome ═════════════════════════════════════════════════ */
 #MainMenu, footer, header { visibility: hidden; }
 .block-container {
-    padding: 1.2rem 1.8rem 2rem !important;
+    padding: 0 1.75rem 2rem !important;
     max-width: 100% !important;
 }
 
-/* ═══════════════════════════════
-   GLASS CARD
-═══════════════════════════════ */
+/* ══ GLASS CARD ════════════════════════════════════════════════════════════ */
 .gc {
-    background: rgba(180,255,180,0.045);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(180,255,180,0.12);
-    border-radius: 18px;
-    padding: 1.2rem 1.4rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.35),
-                inset 0 1px 0 rgba(255,255,255,0.06);
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 12px var(--c-shadow);
 }
 
-/* ═══════════════════════════════
-   CLAY CARD — raised tactile
-═══════════════════════════════ */
+/* ══ CLAY CARD ═════════════════════════════════════════════════════════════ */
 .cc {
-    background: linear-gradient(145deg, #1a4228, #102a18);
-    border: 1px solid rgba(166,255,140,0.14);
-    border-radius: 20px;
-    padding: 1.2rem 1.4rem;
-    box-shadow: 5px 5px 16px rgba(0,0,0,0.45),
-                -2px -2px 7px rgba(166,255,140,0.04);
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 10px var(--c-shadow);
 }
 
-/* ═══════════════════════════════
-   METRIC CARDS
-═══════════════════════════════ */
+/* ══ METRIC CARDS ══════════════════════════════════════════════════════════ */
 .mc {
-    background: linear-gradient(150deg, #1c472b 0%, #0f2a19 100%);
-    border: 1px solid rgba(166,255,140,0.15);
-    border-radius: 16px;
-    padding: 1rem 0.8rem;
+    background: var(--c-card);
+    border: 1px solid var(--c-border);
+    border-top: 3px solid var(--c-forest);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 0.9rem 1rem;
     text-align: center;
-    box-shadow: 4px 4px 14px rgba(0,0,0,0.4),
-                -1px -1px 5px rgba(166,255,140,0.04);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 2px 10px var(--c-shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .mc:hover {
-    transform: translateY(-3px);
-    box-shadow: 6px 8px 20px rgba(0,0,0,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px var(--c-shadow-md);
 }
-.mc-num  { font-size: 2rem; font-weight: 700; color: #b6f7a0; line-height: 1; }
-.mc-lbl  { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
-           text-transform: uppercase; color: #7bbf88; margin-top: 5px; }
-.mc-warn { font-size: 0.62rem; color: #f5c842; margin-top: 3px; }
+.mc-num  {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--c-dark);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+.mc-lbl  {
+    font-size: 0.63rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-top: 6px;
+}
+.mc-warn {
+    font-size: 0.62rem;
+    color: var(--c-amber);
+    margin-top: 4px;
+    font-weight: 500;
+}
 
-/* ═══════════════════════════════
-   BADGES
-═══════════════════════════════ */
+/* ══ BADGES ════════════════════════════════════════════════════════════════ */
 .badge {
     display: inline-block;
-    padding: 2px 10px;
+    padding: 3px 10px;
     border-radius: 100px;
-    font-size: 0.65rem;
+    font-size: 0.63rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
-.b-high   { background: rgba(239,68,68,0.18);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
-.b-medium { background: rgba(245,158,11,0.18); color: #fcd34d; border: 1px solid rgba(245,158,11,0.35); }
-.b-low    { background: rgba(166,255,140,0.12); color: #b6f7a0; border: 1px solid rgba(166,255,140,0.3); }
-.b-ok     { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.3); }
-.b-pend   { background: rgba(245,196,30,0.15); color: #f5c842; border: 1px solid rgba(245,196,30,0.35); }
+.b-high   { background: #FDEAEA; color: var(--c-red);    border: 1px solid #F5AAAA; }
+.b-medium { background: #FEF6E4; color: #B8600A;         border: 1px solid #F4CA80; }
+.b-low    { background: var(--c-soft); color: var(--c-forest); border: 1px solid #A8D4B4; }
+.b-ok     { background: #E6F7F0; color: #1A7A4A;         border: 1px solid #80CCA4; }
+.b-pend   { background: #FEF9E6; color: #A07010;         border: 1px solid #F0D88A; }
 
-/* ═══════════════════════════════
-   SECTION HEADER
-═══════════════════════════════ */
+/* ══ SECTION HEADER ════════════════════════════════════════════════════════ */
 .sh {
-    font-size: 0.65rem;
+    font-size: 0.63rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #b6f7a0;
-    margin-bottom: 0.75rem;
+    color: var(--c-forest);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 10px;
+    border-bottom: 1px solid var(--c-border);
 }
-.sh::after {
+.sh::before {
     content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(166,255,140,0.25), transparent);
+    width: 3px;
+    height: 14px;
+    background: var(--c-forest);
+    border-radius: 2px;
+    flex-shrink: 0;
 }
 
-/* ═══════════════════════════════
-   TRACE ROW
-═══════════════════════════════ */
+/* ══ TRACE ROW ═════════════════════════════════════════════════════════════ */
 .tr {
-    border-left: 2px solid rgba(166,255,140,0.25);
-    padding: 3px 10px;
+    border-left: 2px solid var(--c-border);
+    padding: 4px 10px;
     margin: 2px 0;
-    font-size: 0.75rem;
-    color: #90b898;
-    line-height: 1.4;
+    font-size: 0.74rem;
+    color: var(--c-muted);
+    line-height: 1.45;
 }
-.tr b { color: #c8e6cc; }
-.tr .ts { color: #4d7a56; font-size: 0.68rem; }
+.tr b { color: var(--c-txt); }
+.tr .ts { color: var(--c-accent); font-size: 0.67rem; }
 
-/* ═══════════════════════════════
-   ALERT CARD
-═══════════════════════════════ */
+/* ══ ALERT CARD ════════════════════════════════════════════════════════════ */
 .ac {
-    background: rgba(166,255,140,0.03);
-    border: 1px solid rgba(166,255,140,0.09);
-    border-radius: 14px;
+    background: var(--c-soft);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius-md);
     padding: 1rem 1.2rem;
     margin-bottom: 0.5rem;
 }
-.ac-en { font-size: 0.85rem; color: #d4f5d8; line-height: 1.55; margin: 5px 0; }
-.ac-kn { font-size: 0.82rem; color: #9fd8a4; line-height: 1.55; font-style: italic; margin: 5px 0; }
-.ac-action { font-size: 0.72rem; color: #7bbf88; margin-top: 2px; }
+.ac-en     { font-size: 0.84rem; color: var(--c-txt);   line-height: 1.6; margin: 6px 0; }
+.ac-kn     { font-size: 0.82rem; color: var(--c-forest); line-height: 1.6; font-style: italic; margin: 6px 0; }
+.ac-action { font-size: 0.72rem; color: var(--c-muted); margin-top: 3px; }
 
-/* ═══════════════════════════════
-   AUDIT ROW
-═══════════════════════════════ */
+/* ══ AUDIT ROW ═════════════════════════════════════════════════════════════ */
 .aur {
-    padding: 3px 10px 3px 12px;
+    padding: 4px 10px 4px 12px;
     margin: 2px 0;
     border-radius: 6px;
     font-size: 0.72rem;
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: baseline;
+    background: var(--c-soft);
 }
-.aur .at { color: #4d7a56; min-width: 130px; }
+.aur .at { color: var(--c-muted); min-width: 136px; font-variant-numeric: tabular-nums; }
 .aur .ae { font-weight: 600; }
 
-/* ═══════════════════════════════
-   BUTTONS
-═══════════════════════════════ */
+/* ══ BUTTONS ═══════════════════════════════════════════════════════════════ */
 .stButton > button {
-    background: linear-gradient(145deg, #1e5c34, #163f24) !important;
-    color: #c8f5cc !important;
-    border: 1px solid rgba(166,255,140,0.22) !important;
-    border-radius: 10px !important;
+    background: var(--c-card) !important;
+    color: var(--c-forest) !important;
+    border: 1.5px solid var(--c-border) !important;
+    border-radius: var(--radius-sm) !important;
     font-weight: 500 !important;
     font-size: 0.8rem !important;
-    padding: 0.4rem 1rem !important;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.35) !important;
-    transition: all 0.18s !important;
+    padding: 0.42rem 1rem !important;
+    box-shadow: 0 1px 4px var(--c-shadow) !important;
+    transition: all 0.15s ease !important;
     width: 100%;
+    letter-spacing: 0.01em;
 }
 .stButton > button:hover {
-    background: linear-gradient(145deg, #256e3d, #1b4d2b) !important;
+    background: var(--c-soft) !important;
+    border-color: var(--c-accent) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 4px 5px 14px rgba(0,0,0,0.45) !important;
+    box-shadow: 0 3px 10px var(--c-shadow-md) !important;
 }
 .stButton > button[kind="primary"] {
-    background: linear-gradient(145deg, #1f6b38, #165229) !important;
-    border-color: rgba(182,247,160,0.35) !important;
-    color: #d4f5d8 !important;
+    background: var(--c-forest) !important;
+    border-color: var(--c-forest) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(36,107,73,0.28) !important;
+}
+.stButton > button[kind="primary"]:hover {
+    background: var(--c-dark) !important;
+    border-color: var(--c-dark) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(18,59,42,0.32) !important;
 }
 
-/* ═══════════════════════════════
-   INPUTS
-═══════════════════════════════ */
+/* ══ INPUTS ════════════════════════════════════════════════════════════════ */
 .stTextInput > div > div > input {
-    background: #ffffff !important;
-    border: 1px solid rgba(166,255,140,0.3) !important;
-    border-radius: 9px !important;
-    color: #0f2a19 !important;
+    background: var(--c-card) !important;
+    border: 1.5px solid var(--c-border) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--c-txt) !important;
     font-size: 0.8rem !important;
-    padding: 6px 10px !important;
-    caret-color: #0f2a19 !important;
+    padding: 7px 10px !important;
+    caret-color: var(--c-forest) !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
 }
-.stTextInput > div > div > input::placeholder {
-    color: #7a9e7e !important;
-}
+.stTextInput > div > div > input::placeholder { color: var(--c-muted) !important; }
 .stTextInput > div > div > input:focus {
-    border-color: rgba(166,255,140,0.6) !important;
-    box-shadow: 0 0 0 2px rgba(166,255,140,0.12) !important;
+    border-color: var(--c-forest) !important;
+    box-shadow: 0 0 0 3px rgba(36,107,73,0.1) !important;
     outline: none !important;
 }
-.stTextInput label { color: #7bbf88 !important; font-size: 0.72rem !important; }
+.stTextInput label { color: var(--c-muted) !important; font-size: 0.72rem !important; font-weight: 500 !important; }
 
-/* ═══════════════════════════════
-   EXPANDER
-═══════════════════════════════ */
+/* ══ EXPANDER ══════════════════════════════════════════════════════════════ */
 details > summary {
-    background: rgba(166,255,140,0.04) !important;
-    border: 1px solid rgba(166,255,140,0.1) !important;
-    border-radius: 10px !important;
-    color: #b6f7a0 !important;
-    font-size: 0.8rem !important;
-    padding: 8px 12px !important;
+    background: var(--c-soft) !important;
+    border: 1px solid var(--c-border) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--c-dark) !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 9px 14px !important;
     cursor: pointer;
 }
 .streamlit-expanderHeader {
-    background: rgba(166,255,140,0.04) !important;
-    border-radius: 10px !important;
-    color: #b6f7a0 !important;
-    font-size: 0.8rem !important;
+    background: var(--c-soft) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--c-dark) !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
 }
 .streamlit-expanderContent {
-    border: 1px solid rgba(166,255,140,0.08) !important;
+    border: 1px solid var(--c-border) !important;
     border-top: none !important;
-    border-radius: 0 0 10px 10px !important;
-    background: rgba(0,0,0,0.15) !important;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+    background: var(--c-card) !important;
 }
 
-/* ═══════════════════════════════
-   ALERTS / TOASTS
-═══════════════════════════════ */
-.stAlert {
-    border-radius: 12px !important;
-    font-size: 0.82rem !important;
-}
+/* ══ ALERTS / TOASTS ═══════════════════════════════════════════════════════ */
+.stAlert { border-radius: var(--radius-md) !important; font-size: 0.82rem !important; }
 
-/* ═══════════════════════════════
-   SPINNER
-═══════════════════════════════ */
-.stSpinner > div { border-top-color: #b6f7a0 !important; }
+/* ══ SPINNER ═══════════════════════════════════════════════════════════════ */
+.stSpinner > div { border-top-color: var(--c-forest) !important; }
 
-/* ═══════════════════════════════
-   SCROLLBAR
-═══════════════════════════════ */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(166,255,140,0.25); border-radius: 10px; }
+/* ══ SCROLLBAR ═════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-accent); }
 
-/* ═══════════════════════════════
-   COLUMN GAP FIX
-═══════════════════════════════ */
+/* ══ COLUMN GAP FIX ════════════════════════════════════════════════════════ */
 [data-testid="column"] { padding: 0 6px !important; }
+
+/* ══ RESPONSIVE ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .block-container { padding: 0 0.75rem 2rem !important; }
+    .mc-num { font-size: 1.6rem; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -329,14 +353,13 @@ risk_zones     = _load_risk_zones(store, confirmed)
 last_run       = store.get_last_run()
 
 # ══════════════════════════════════════════════════════════════════════════════
-# HEADER
+# HEADER — deep forest green bar
 # ══════════════════════════════════════════════════════════════════════════════
 _logo_html = (
     f"<img src='{_LOGO_SRC}' style='"
-    f"width:72px;height:72px;object-fit:contain;"
-    f"border-radius:50%;border:2px solid rgba(166,255,140,0.25);"
-    f"background:rgba(255,255,255,0.08);padding:4px;"
-    f"box-shadow:0 0 16px rgba(166,255,140,0.2);"
+    f"width:52px;height:52px;object-fit:contain;"
+    f"border-radius:50%;border:2px solid rgba(255,255,255,0.25);"
+    f"background:rgba(255,255,255,0.1);padding:3px;"
     f"flex-shrink:0"
     f"'/>"
     if _LOGO_SRC else ""
@@ -345,32 +368,31 @@ _logo_html = (
 st.markdown(
     f"""
 <div style="
-    background: linear-gradient(135deg, rgba(26,66,40,0.92) 0%, rgba(10,30,16,0.97) 100%);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(166,255,140,0.15);
-    border-radius: 20px;
-    padding: 1rem 1.6rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    background: #123B2A;
+    border-radius: 0 0 0 0;
+    padding: 0.9rem 1.75rem;
+    margin: 0 -1.75rem 1.25rem;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(18,59,42,0.18);
 ">
   {_logo_html}
   <div style="flex:1;min-width:200px">
-    <div style="font-size:0.58rem;font-weight:700;letter-spacing:0.18em;
-        color:#b6f7a0;text-transform:uppercase;margin-bottom:3px">
-      Karnataka Forest Department &nbsp;&#183;&nbsp; Agentic AI Early Warning
+    <div style="font-size:0.56rem;font-weight:600;letter-spacing:0.2em;
+        color:#72B788;text-transform:uppercase;margin-bottom:2px">
+      Karnataka Forest Department &nbsp;&#8231;&nbsp; Agentic AI Early Warning
     </div>
-    <div style="font-size:1.5rem;font-weight:700;color:#ffffff;line-height:1.2;letter-spacing:-0.01em">
+    <div style="font-size:1.45rem;font-weight:700;color:#ffffff;line-height:1.2;letter-spacing:-0.015em">
       ECO&#8209;HERD
-      <span style="font-weight:300;font-size:0.95rem;color:#8ed4a0">
-        &nbsp;Human&#8209;Elephant Conflict System
+      <span style="font-weight:300;font-size:0.9rem;color:#A8CCBB;margin-left:6px">
+        Human&#8209;Elephant Conflict System
       </span>
     </div>
   </div>
-  <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
-    <div style="width:8px;height:8px;border-radius:50%;background:#b6f7a0;
-        box-shadow:0 0 10px #b6f7a0"></div>
-    <span style="font-size:0.68rem;color:#7bbf88;font-weight:500">Live</span>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto;
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+      border-radius:100px;padding:5px 12px 5px 10px">
+    <div style="width:7px;height:7px;border-radius:50%;background:#72B788;flex-shrink:0"></div>
+    <span style="font-size:0.68rem;color:#A8CCBB;font-weight:500;letter-spacing:0.04em">Live</span>
   </div>
 </div>
 """,
@@ -382,32 +404,33 @@ st.markdown(
 # ══════════════════════════════════════════════════════════════════════════════
 c1, c2, c3 = st.columns([1.5, 1.5, 6])
 with c1:
-    run_clicked = st.button("▶  Run Pipeline", type="primary", use_container_width=True)
+    run_clicked = st.button("&#9654;  Run Pipeline", type="primary", use_container_width=True)
 with c2:
-    if st.button("↺  Refresh", use_container_width=True):
+    if st.button("&#8635;  Refresh", use_container_width=True):
         st.rerun()
 with c3:
     if last_run and last_run.end_time:
-        ts = last_run.end_time.strftime("%d %b %Y · %H:%M UTC")
+        ts   = last_run.end_time.strftime("%d %b %Y &middot; %H:%M UTC")
         errs = len(last_run.errors)
-        err_col = "#fca5a5" if errs else "#b6f7a0"
+        err_col = "#D93636" if errs else "#246B49"
         st.markdown(
-            f"<div style='padding-top:9px;font-size:0.74rem;color:#7bbf88'>"
-            f"Last run &nbsp;<b style='color:#d4f5d8'>{ts}</b>"
-            f"&nbsp;·&nbsp; {len(last_run.agents_run)} agents"
-            f"&nbsp;·&nbsp; <span style='color:{err_col}'>{errs} error{'s' if errs!=1 else ''}</span>"
+            f"<div style='padding-top:9px;font-size:0.74rem;color:#64776B'>"
+            f"Last run &nbsp;<b style='color:#183629'>{ts}</b>"
+            f"&nbsp;&middot;&nbsp; {len(last_run.agents_run)} agents"
+            f"&nbsp;&middot;&nbsp; <span style='color:{err_col};font-weight:600'>"
+            f"{errs} error{'s' if errs!=1 else ''}</span>"
             f"</div>",
             unsafe_allow_html=True
         )
     else:
         st.markdown(
-            "<div style='padding-top:9px;font-size:0.74rem;color:#4d7a56'>"
-            "No run yet &nbsp;&#8212;&nbsp; click Run Pipeline to start"
+            "<div style='padding-top:9px;font-size:0.74rem;color:#64776B'>"
+            "No run yet &nbsp;&mdash;&nbsp; click <b>Run Pipeline</b> to start"
             "</div>", unsafe_allow_html=True
         )
 
 if run_clicked:
-    with st.spinner("Running 3-agent pipeline…"):
+    with st.spinner("Running 3-agent pipeline..."):
         try:
             report = orch.run_once(hours_back=24)
             st.success(
@@ -419,7 +442,7 @@ if run_clicked:
             st.error(f"Pipeline error: {e}")
     st.rerun()
 
-st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # METRIC ROW  — 5 cards
@@ -443,7 +466,7 @@ for col, (num, lbl, warn) in zip(cols, metrics):
         unsafe_allow_html=True
     )
 
-st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MAP  +  AGENT TRACE
@@ -451,7 +474,7 @@ st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
 map_col, trace_col = st.columns([3, 2], gap="medium")
 
 with map_col:
-    st.markdown("<div class='sh'>&#9632; Karnataka — Live Situation Map</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sh'>Karnataka &mdash; Live Situation Map</div>", unsafe_allow_html=True)
     try:
         from dashboard.map_builder import build_map
         fmap = build_map(detections=detections, alerts=all_alerts, risk_zones=risk_zones)
@@ -460,24 +483,22 @@ with map_col:
         st.error(f"Map error: {e}")
         import traceback; st.code(traceback.format_exc())
     st.markdown(
-        "<div style='font-size:0.62rem;color:#4d7a56;margin-top:6px;line-height:1.7'>"
-        "&#9632; <span style='color:#fca5a5'>HIGH</span> &ensp;"
-        "&#9632; <span style='color:#fcd34d'>MEDIUM</span> &ensp;"
-        "&#9632; <span style='color:#b6f7a0'>LOW</span>"
-        "&ensp;&#183;&ensp;Green = forest corridors"
-        "&ensp;&#183;&ensp;Layer control (top-right) for Google Satellite"
+        "<div style='font-size:0.62rem;color:#64776B;margin-top:8px;line-height:1.8'>"
+        "&#9632; <span style='color:#D93636;font-weight:600'>HIGH</span> &ensp;"
+        "&#9632; <span style='color:#F4B942;font-weight:600'>MEDIUM</span> &ensp;"
+        "&#9632; <span style='color:#246B49;font-weight:600'>LOW</span>"
+        "&ensp;&middot;&ensp;Green shading = forest corridors"
+        "&ensp;&middot;&ensp;Layer control (top-right) for Google Satellite"
         "</div>",
         unsafe_allow_html=True
     )
 
 with trace_col:
-    st.markdown("<div class='sh'>&#9632; Agent Execution Trace</div>", unsafe_allow_html=True)
+    st.markdown("<div class='sh'>Agent Execution Trace</div>", unsafe_allow_html=True)
 
-    # Build entire trace as one HTML block so it stays inside the card
     trace_log = store.get_tool_trace_log(last_n=20)
 
     if trace_log:
-        # Group by agent run — dedupe repetitive tool pairs into clean steps
         rows = []
         seen = set()
         for entry in reversed(trace_log):
@@ -486,32 +507,38 @@ with trace_col:
                 continue
             seen.add(key)
             icon  = "&#10003;" if not entry.error else "&#10007;"
-            iclr  = "#b6f7a0"  if not entry.error else "#fca5a5"
+            iclr  = "#246B49"  if not entry.error else "#D93636"
+            ibg   = "#E6F7F0"  if not entry.error else "#FDEAEA"
             ts    = entry.timestamp.strftime("%H:%M:%S")
-            err   = (f"<div style='color:#fca5a5;font-size:0.68rem;margin-top:1px'>"
-                     f"{entry.error[:80]}</div>") if entry.error else ""
+            err   = (f"<div style='color:#D93636;font-size:0.68rem;margin-top:2px'>"
+                     f"{entry.error[:90]}</div>") if entry.error else ""
             rows.append(
-                f"<div style='border-left:2px solid rgba(166,255,140,0.2);"
-                f"padding:5px 10px;margin:3px 0;border-radius:0 8px 8px 0;"
-                f"background:rgba(166,255,140,0.02)'>"
-                f"<span style='color:{iclr};font-size:0.8rem'>{icon}</span>"
-                f"&nbsp;<span style='color:#c8e6cc;font-weight:600;font-size:0.78rem'>"
+                f"<div style='border-left:3px solid {iclr};"
+                f"padding:6px 10px;margin:3px 0;border-radius:0 8px 8px 0;"
+                f"background:#FFFFFF;'>"
+                f"<div style='display:flex;align-items:center;gap:6px'>"
+                f"<span style='background:{ibg};color:{iclr};font-size:0.72rem;"
+                f"width:18px;height:18px;border-radius:50%;display:inline-flex;"
+                f"align-items:center;justify-content:center;flex-shrink:0'>{icon}</span>"
+                f"<span style='color:#183629;font-weight:600;font-size:0.78rem'>"
                 f"{entry.tool_name}</span>"
-                f"&nbsp;<span style='color:#3d6645;font-size:0.68rem'>{ts}</span>"
-                f"<div style='color:#6b9972;font-size:0.74rem;margin-top:1px'>"
-                f"{entry.output_summary[:90]}</div>"
+                f"<span style='color:#64776B;font-size:0.67rem;margin-left:auto'>{ts}</span>"
+                f"</div>"
+                f"<div style='color:#64776B;font-size:0.73rem;margin-top:3px;line-height:1.45'>"
+                f"{entry.output_summary[:95]}</div>"
                 f"{err}"
                 f"</div>"
             )
 
         trace_html = (
             "<div style='"
-            "background:rgba(180,255,180,0.03);"
-            "border:1px solid rgba(180,255,180,0.1);"
-            "border-radius:16px;"
-            "padding:12px 14px;"
+            "background:#F4F7F2;"
+            "border:1px solid #D0E5D8;"
+            "border-radius:12px;"
+            "padding:10px 12px;"
             "max-height:500px;"
             "overflow-y:auto;"
+            "display:flex;flex-direction:column;gap:1px;"
             "'>"
             + "".join(rows) +
             "</div>"
@@ -519,40 +546,44 @@ with trace_col:
     else:
         trace_html = (
             "<div style='"
-            "background:rgba(180,255,180,0.03);"
-            "border:1px solid rgba(180,255,180,0.1);"
-            "border-radius:16px;"
-            "padding:40px 14px;"
+            "background:#F4F7F2;"
+            "border:1px solid #D0E5D8;"
+            "border-radius:12px;"
+            "padding:48px 14px;"
             "text-align:center;"
-            "color:#3d6645;font-size:0.78rem;"
+            "color:#64776B;font-size:0.78rem;"
             "'>"
-            "&#9632; No trace yet &mdash; run the pipeline to see activity"
+            "No trace yet &mdash; run the pipeline to see agent activity"
             "</div>"
         )
 
     st.markdown(trace_html, unsafe_allow_html=True)
 
-st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # HITL QUEUE
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div class='sh'>&#9650; HITL Verification Queue</div>",
+    "<div class='sh'>HITL Verification Queue</div>",
     unsafe_allow_html=True
 )
 
 if not hitl_queue:
     st.markdown(
-        "<div class='cc' style='color:#b6f7a0;font-size:0.82rem'>"
-        "&#10003;&nbsp; HITL queue is empty — all detections above the confidence threshold."
+        "<div class='cc' style='color:#246B49;font-size:0.82rem;display:flex;align-items:center;gap:8px'>"
+        "<span style='background:#E6F7F0;color:#246B49;border-radius:50%;width:22px;height:22px;"
+        "display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0'>"
+        "&#10003;</span>"
+        "HITL queue is empty &mdash; all detections are above the confidence threshold."
         "</div>", unsafe_allow_html=True
     )
 else:
     st.markdown(
-        f"<div style='font-size:0.76rem;color:#f5c842;margin-bottom:0.6rem'>"
-        f"&#9650;&nbsp; {len(hitl_queue)} detection(s) require forest officer verification"
-        f"&nbsp;(threshold: 0.70)"
+        f"<div style='font-size:0.76rem;color:#B8600A;background:#FEF6E4;border:1px solid #F4CA80;"
+        f"border-radius:8px;padding:8px 14px;margin-bottom:0.75rem;display:inline-flex;gap:8px;align-items:center'>"
+        f"&#9650;&nbsp; <b>{len(hitl_queue)}</b> detection(s) require forest officer verification"
+        f"&nbsp;(confidence threshold: 0.70)"
         f"</div>", unsafe_allow_html=True
     )
     for item in hitl_queue:
@@ -564,15 +595,16 @@ else:
         ):
             left, right = st.columns([3, 1], gap="medium")
             with left:
+                conf_col = "#D93636" if det.detection_confidence < 0.5 else "#B8600A"
                 st.markdown(
                     f"<div class='ac'>"
-                    f"<div style='font-size:0.78rem;color:#b6f7a0;margin-bottom:6px'>"
-                    f"Confidence: <b style='color:#f5c842'>{det.detection_confidence:.2f}</b>"
-                    f"&nbsp;/&nbsp;threshold 0.70"
-                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;In corridor: <b>{'Yes' if det.in_corridor else 'No'}</b>"
-                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;Village: <b>{det.nearest_village}</b> ({det.distance_km:.1f} km)"
+                    f"<div style='font-size:0.78rem;color:#64776B;margin-bottom:8px;display:flex;gap:16px;flex-wrap:wrap'>"
+                    f"<span>Confidence: <b style='color:{conf_col}'>{det.detection_confidence:.2f}</b>"
+                    f" <span style='color:#64776B;font-weight:400'>/ threshold 0.70</span></span>"
+                    f"<span>In corridor: <b style='color:#183629'>{'Yes' if det.in_corridor else 'No'}</b></span>"
+                    f"<span>Village: <b style='color:#183629'>{det.nearest_village}</b> ({det.distance_km:.1f} km)</span>"
                     f"</div>"
-                    f"<div style='font-size:0.78rem;color:#7bbf88;line-height:1.5'>"
+                    f"<div style='font-size:0.79rem;color:#183629;line-height:1.6'>"
                     f"{det.explanation[:300]}"
                     f"</div>"
                     f"</div>",
@@ -585,37 +617,42 @@ else:
                     if orch.resolve_hitl(item.item_id, HitlVerdict.APPROVED, oid):
                         st.success("Approved.")
                         st.rerun()
-                if st.button("Reject  — False Alarm", key=f"hr_{item.item_id}"):
+                if st.button("Reject — False Alarm", key=f"hr_{item.item_id}"):
                     from schemas import HitlVerdict
                     if orch.resolve_hitl(item.item_id, HitlVerdict.REJECTED, oid, notes="Rejected via dashboard"):
                         st.info("Marked as false alarm.")
                         st.rerun()
 
-st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PENDING ALERTS
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div class='sh'>&#9679; Pending Alerts &mdash; Forest Officer Approval</div>",
+    "<div class='sh'>Pending Alerts &mdash; Forest Officer Approval</div>",
     unsafe_allow_html=True
 )
 st.markdown(
-    "<div style='font-size:0.68rem;color:#4d7a56;margin-bottom:0.7rem'>"
+    "<div style='font-size:0.7rem;color:#64776B;background:#EAF4EC;border:1px solid #D0E5D8;"
+    "border-radius:8px;padding:7px 14px;margin-bottom:0.9rem;display:inline-flex;gap:6px;align-items:center'>"
     "&#8212;&nbsp; No alert is dispatched without explicit forest officer approval (HITL gate, non-negotiable)"
     "</div>", unsafe_allow_html=True
 )
 
 if not pending_alerts:
     st.markdown(
-        "<div class='cc' style='color:#b6f7a0;font-size:0.82rem'>"
-        "&#10003;&nbsp; No alerts pending approval."
+        "<div class='cc' style='color:#246B49;font-size:0.82rem;display:flex;align-items:center;gap:8px'>"
+        "<span style='background:#E6F7F0;color:#246B49;border-radius:50%;width:22px;height:22px;"
+        "display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0'>"
+        "&#10003;</span>"
+        "No alerts pending approval."
         "</div>", unsafe_allow_html=True
     )
 else:
     st.markdown(
-        f"<div style='font-size:0.76rem;color:#f5c842;margin-bottom:0.6rem'>"
-        f"&#9679;&nbsp; {len(pending_alerts)} alert(s) awaiting your approval"
+        f"<div style='font-size:0.76rem;color:#B8600A;background:#FEF6E4;border:1px solid #F4CA80;"
+        f"border-radius:8px;padding:8px 14px;margin-bottom:0.75rem;display:inline-flex;gap:8px;align-items:center'>"
+        f"&#9679;&nbsp; <b>{len(pending_alerts)}</b> alert(s) awaiting your approval"
         f"</div>", unsafe_allow_html=True
     )
     for alert in pending_alerts:
@@ -629,33 +666,37 @@ else:
         ):
             left, right = st.columns([3, 1], gap="medium")
             with left:
+                # accent colour for the left border per alert level
+                accent = {"HIGH": "#D93636", "MEDIUM": "#F4B942", "LOW": "#246B49"}.get(level, "#246B49")
                 st.markdown(
-                    f"<div class='ac'>"
+                    f"<div class='ac' style='border-left:4px solid {accent}'>"
                     # top row — badge + scores
-                    f"<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>"
+                    f"<div style='display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap'>"
                     f"<span class='badge {badge_cls}'>{level}</span>"
-                    f"<span style='font-size:0.72rem;color:#7bbf88'>"
-                    f"Village Risk Score <b style='color:#d4f5d8'>{alert.village_risk_score:.2f}</b>"
-                    f"&nbsp;&nbsp;&#183;&nbsp;&nbsp;"
-                    f"Detection Confidence <b style='color:#d4f5d8'>{alert.detection_confidence:.2f}</b>"
+                    f"<span style='font-size:0.72rem;color:#64776B'>"
+                    f"Village Risk Score <b style='color:#183629'>{alert.village_risk_score:.2f}</b>"
+                    f"&nbsp;&middot;&nbsp;"
+                    f"Detection Confidence <b style='color:#183629'>{alert.detection_confidence:.2f}</b>"
                     f"</span></div>"
                     # risk explanation
-                    f"<div style='font-size:0.72rem;color:#7bbf88;margin-bottom:7px;'>"
+                    f"<div style='font-size:0.73rem;color:#64776B;margin-bottom:9px;line-height:1.55'>"
                     f"{alert.risk_explanation}</div>"
                     # EN message
                     f"<div class='ac-en'>"
-                    f"<span style='font-size:0.63rem;font-weight:700;letter-spacing:0.08em;"
-                    f"color:#b6f7a0;text-transform:uppercase;margin-right:8px'>EN</span>"
+                    f"<span style='font-size:0.6rem;font-weight:700;letter-spacing:0.1em;"
+                    f"color:#246B49;text-transform:uppercase;margin-right:8px;"
+                    f"background:#EAF4EC;border:1px solid #A8D4B4;border-radius:4px;padding:1px 6px'>EN</span>"
                     f"{alert.message_en}</div>"
                     # KN message
                     f"<div class='ac-kn'>"
-                    f"<span style='font-size:0.63rem;font-weight:700;letter-spacing:0.08em;"
-                    f"color:#b6f7a0;text-transform:uppercase;margin-right:8px;font-style:normal'>KN</span>"
+                    f"<span style='font-size:0.6rem;font-weight:700;letter-spacing:0.1em;"
+                    f"color:#2878B8;text-transform:uppercase;margin-right:8px;font-style:normal;"
+                    f"background:#E8F2FA;border:1px solid #A0C4E8;border-radius:4px;padding:1px 6px'>KN</span>"
                     f"{alert.message_kn}</div>"
-                    # actions
-                    f"<div style='margin-top:8px;padding-top:8px;border-top:1px solid rgba(166,255,140,0.08)'>"
+                    # recommended actions
+                    f"<div style='margin-top:10px;padding-top:10px;border-top:1px solid #D0E5D8'>"
                     + "".join(
-                        f"<div class='ac-action'>&#8250; {a}</div>"
+                        f"<div class='ac-action'>&#8250;&nbsp; {a}</div>"
                         for a in alert.recommended_actions[:4]
                     ) +
                     f"</div>"
@@ -676,7 +717,7 @@ else:
                         st.info("Rejected and logged.")
                         st.rerun()
 
-st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # AUDIT LOG
@@ -686,37 +727,37 @@ with st.expander("Audit Log — last 10 events", expanded=False):
     entries = read_audit_log(last_n=10)
     if entries:
         COLOURS = {
-            "ALERT_APPROVED":    "#b6f7a0",
-            "ALERT_REJECTED":    "#fca5a5",
-            "HITL_FLAGGED":      "#f5c842",
-            "HITL_RESOLVED":     "#93c5fd",
-            "PIPELINE_RUN_START":"#c4b5fd",
-            "PIPELINE_RUN_END":  "#c4b5fd",
-            "ALERT_CREATED":     "#67e8f9",
+            "ALERT_APPROVED":    "#246B49",
+            "ALERT_REJECTED":    "#D93636",
+            "HITL_FLAGGED":      "#F4B942",
+            "HITL_RESOLVED":     "#2878B8",
+            "PIPELINE_RUN_START":"#64776B",
+            "PIPELINE_RUN_END":  "#246B49",
+            "ALERT_CREATED":     "#2878B8",
         }
-        st.markdown("<div class='gc' style='padding:0.8rem 1rem'>", unsafe_allow_html=True)
+        st.markdown("<div class='gc' style='padding:0.6rem 0.8rem'>", unsafe_allow_html=True)
         for entry in reversed(entries):
             ts      = entry.get("timestamp", "")[:19].replace("T", " ")
             evt     = entry.get("event_type", "")
             payload = entry.get("payload", {})
-            colour  = COLOURS.get(evt, "#4d7a56")
+            colour  = COLOURS.get(evt, "#64776B")
             detail  = ""
             if "village" in payload:
                 detail = f"&nbsp;&mdash;&nbsp;{payload['village']}"
             elif "detection_id" in payload:
                 detail = f"&nbsp;&mdash;&nbsp;detection {str(payload.get('detection_id',''))[:8]}&hellip;"
             st.markdown(
-                f"<div class='aur' style='border-left:2px solid {colour}'>"
+                f"<div class='aur' style='border-left:3px solid {colour}'>"
                 f"<span class='at'>{ts}</span>"
                 f"<span class='ae' style='color:{colour}'>{evt}</span>"
-                f"<span style='color:#7bbf88;font-size:0.7rem'>{detail}</span>"
+                f"<span style='color:#64776B;font-size:0.7rem'>{detail}</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
         st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.markdown(
-            "<div style='color:#3d6645;font-size:0.78rem;padding:8px'>No audit entries yet.</div>",
+            "<div style='color:#64776B;font-size:0.78rem;padding:10px'>No audit entries yet.</div>",
             unsafe_allow_html=True
         )
 
@@ -724,10 +765,10 @@ with st.expander("Audit Log — last 10 events", expanded=False):
 # FOOTER
 # ══════════════════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div style='text-align:center;font-size:0.6rem;color:#2d5235;"
-    "margin-top:2rem;padding-top:0.8rem;"
-    "border-top:1px solid rgba(166,255,140,0.07)'>"
-    "ECO&#8209;HERD &nbsp;&#183;&nbsp; Karnataka Forest Department &nbsp;&#183;&nbsp; "
+    "<div style='text-align:center;font-size:0.6rem;color:#64776B;"
+    "margin-top:2.5rem;padding-top:1rem;"
+    "border-top:1px solid #D0E5D8'>"
+    "ECO&#8209;HERD &nbsp;&middot;&nbsp; Karnataka Forest Department &nbsp;&middot;&nbsp; "
     "Synthetic data only &mdash; does not represent real elephant movements"
     "</div>",
     unsafe_allow_html=True
