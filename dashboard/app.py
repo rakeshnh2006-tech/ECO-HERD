@@ -311,20 +311,36 @@ details > summary {
 </style>
 """, unsafe_allow_html=True)
 
+# ─── Bootstrap mock data ──────────────────────────────────────────────────────
+# Runs once per Streamlit worker process. Seeds the store with realistic mock
+# data if it is empty or only contains stale FALLBACK responses from failed
+# LLM calls.  Safe to run even when real pipeline data is present — it checks
+# before writing.
+def _bootstrap_mock():
+    try:
+        from memory.store import store as _s
+        dets = _s.get_detections()
+        all_fallback = not dets or all("FALLBACK" in (d.explanation or "") for d in dets)
+        if not all_fallback:
+            return  # real data already present — do nothing
+        _s.reset()
+        _root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        if _root not in sys.path:
+            sys.path.insert(0, _root)
+        import importlib
+        if "mock_seed" in sys.modules:
+            importlib.reload(sys.modules["mock_seed"])
+        else:
+            import mock_seed  # noqa: F401
+    except Exception:
+        pass
+
+_bootstrap_mock()
+
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def _get_store():
     from memory.store import store
-    # Auto-seed mock data if the store is empty (LLM APIs unavailable / first load)
-    if not store.get_detections():
-        try:
-            import importlib, sys
-            _root = os.path.join(os.path.dirname(__file__), "..")
-            if _root not in sys.path:
-                sys.path.insert(0, _root)
-            import mock_seed  # noqa: F401 — side-effect: seeds the store
-        except Exception:
-            pass  # silently skip if mock_seed missing or broken
     return store
 
 @st.cache_resource(show_spinner=False)
